@@ -44,12 +44,11 @@ function main(params) {
         };
         request(options, function(error, response, body){
             if (error) {
-                whisk.error();
+                return whisk.error();
             }
             console.log("Status code: " + response.statusCode);
-            whisk.done({response: body});
+            return whisk.done({response: body});
         });
-        return whisk.async();
     }
     if (lifecycleEvent === 'DELETE') {
         var options = {
@@ -62,12 +61,11 @@ function main(params) {
         };
         request(options, function(error, response, body) {
             if (error) {
-                whisk.error();
+                return whisk.error();
             }
             console.log("Status code: " + response.statusCode);
-            whisk.done({response: body});
+            return whisk.done({response: body});
         });
-        return whisk.async();
     }
     return whisk.async();
 }

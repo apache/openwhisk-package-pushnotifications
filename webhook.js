@@ -11,7 +11,6 @@ var request = require('request');
 function main(params) {
 
     console.log("push trigger feed params: ", params);
-
     var parsedName = parseQName(params.triggerName);
     var trigger = parsedName.name;
     var namespace = parsedName.namespace;
@@ -21,32 +20,35 @@ function main(params) {
     var appId = params.appId;
     var appSecret = params.appSecret;
     // The URL to create the webhook on push service
-    var registrationEndpoint = 'https://mobile.ng.bluemix.net/imfpush/v1/apps/' + appId + '/webhooks/' + trigger;
-    var lifecycleEvent = (msg.lifecycleEvent || 'CREATE').trim().toUpperCase();
+    var registrationEndpoint = 'https://mobile.ng.bluemix.net/imfpush/v1/apps/' + appId + '/webhooks';
+    //var registrationEndpoint = 'https://imfpushtest1.ng.bluemix.net/imfpush/v1/apps/'+appId+'/webhooks';
+    var lifecycleEvent = (params.lifecycleEvent || 'CREATE').trim().toUpperCase();
     if (lifecycleEvent === 'CREATE' || lifecycleEvent === 'UPDATE') {
-        var events = params.events.split(',');
-        if (!events) {
-            events = '*';
+
+        if (!params.events) {
+            var events = ["*"];
+        }
+        else {
+            var events = params.events.split(',');
         }
         var body = {
+            name:trigger,
             url: whiskCallbackUrl,
-            event_types: events
+            eventTypes: events
         };
         var options = {
-            method: 'PUT',
+            method: 'POST',
             url: registrationEndpoint,
             body: JSON.stringify(body),
             headers: {
                 'appSecret': appSecret,
-                'Content-Type': 'application/json',
-                'User-Agent': 'whisk'
+                'Content-Type': 'application/json'
             }
         };
         request(options, function(error, response, body){
             if (error) {
                 return whisk.error();
             }
-            console.log("Status code: " + response.statusCode);
             return whisk.done({response: body});
         });
     }
@@ -55,15 +57,13 @@ function main(params) {
             method: 'DELETE',
             url: registrationEndpoint,
             headers: {
-                'appSecret': appSecret,
-                'User-Agent': 'whisk'
+                'appSecret': appSecret
             }
         };
         request(options, function(error, response, body) {
             if (error) {
                 return whisk.error();
             }
-            console.log("Status code: " + response.statusCode);
             return whisk.done({response: body});
         });
     }

@@ -147,38 +147,27 @@ function main(params) {
         sendMessage.settings.gcm = gcm;
     }
 
-    var body = JSON.stringify(sendMessage);
-    console.log("JSON body to IMF Push is " + body);
+    var bodyData = JSON.stringify(sendMessage);
+    var request = require('request');
+    
+    request({
+        method: 'post',
+        uri: 'https://mobile.ng.bluemix.net/imfpush/v1/apps/'+appId+'/messages',
+        headers :{
+           'appSecret': appSecret,
+           'Accept': 'application/json',
+           'Accept-Language': 'en-US',
+           'Content-Type': 'application/json',
+           'Content-Length': bodyData.length
+        },
+        body:bodyData
+    }, function(error, response, body) {
 
-    var headers = {
-       'appSecret': appSecret,
-       'Accept': 'application/json',
-       'Accept-Language': 'en-US',
-       'Content-Type': 'application/json',
-       'Content-Length': body.length
-    };
-    var options = {
-        host: 'mobile.ng.bluemix.net',
-        path: '/imfpush/v1/apps/'+appId+'/messages',
-        method: 'POST',
-        headers: headers
-    };
-
-    var request = https.request(options, function(res) {
-        var json = '';
-        console.log('RESPONSE STATUS: ' + res.statusCode);
-        console.log('RESPONSE HEADERS: ' + JSON.stringify(res.headers));
-        res.setEncoding('utf8');
-        res.on('data', function (chunk) {
-            json += chunk;
-        });
-        res.on('end', function() {
-            return whisk.done({pushResponse: JSON.parse(json)});
-        });
+        if(error){
+            return whisk.error();
+        }
+        return whisk.done({pushResponse: JSON.stringify(body, undefined, 4)});
     });
-
-    request.write(body);
-    request.end();
     return whisk.async();
 }
 

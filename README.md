@@ -58,9 +58,9 @@ Alternatively, you can use
  ```
 
 ### Sending Push Notifications
+{: #action parameters}
 
 The `/whisk.system/pushnotifications/sendMessage` action sends push notifications to registered devices. The parameters are as follows:
-
 - `text` - The notification message to be shown to the user. Eg: -p text "Hi ,OpenWhisk send a notification".
 - `url`: An optional URL that can be sent along with the alert. Eg : -p url "https:\\www.w3.ibm.com".
 - `gcmPayload` - Custom JSON payload that will be sent as part of the notification message. Eg: -p gcmPayload "{"hi":"hello"}"
@@ -102,7 +102,7 @@ The parameters are as follows:
 
 - `appId:` The Bluemix push notification service appSecret.
 - `appSecret:` The Bluemix app GUID.
-- `events:` Supported events are `onDeviceRegister`, `onDeviceUnregister`, `onSubscribe`, `onUnsubscribe`.To get notified for all events use the wildcard character `*`.
+- `events:` Supported events are `onDeviceRegister`, `onDeviceUnregister`, `onDeviceUpdate`, `onSubscribe`, `onUnsubscribe`.To get notified for all events use the wildcard character `*`.
 
 The following is an example of creating a trigger that will be fired each time there is a new device registered with the IBM Push Notifications Service application.
 
@@ -117,3 +117,34 @@ The following is an example of creating a trigger that will be fired each time t
  ```
   $ wsk trigger create myPushTrigger --feed myPush/webhook --param events onDeviceRegister
   ```
+
+## Using Push Package Locally.
+
+You can use the push package actions and feed in your own openWhisk packages. For using it you have to download the Push package form the  [wsk-pkg-pushnotification](https://github.com/openwhisk/wsk-pkg-pushnotifications) repository.
+
+To create your own package follow the below steps,
+
+1. Point to the ```wsk-pck-pushnotification``` location.
+2. Create the package using ```wsk package create package-name``` command
+3. Add action  using the following command,
+   
+   `wsk action create actionName sendmessage.js -p appId "your_AppID" -p appSecret "application_Secret" -p text "message to be send to device"`
+   
+  You can add multiple parameters to sendMessage action. Check for the available parameters [here](#action parameters)
+   
+4. Create feed using the following command,
+  
+   `wsk action create /myNamespace/yourPackageName/webhook webhook.js -a feed true`
+   
+5. Create a trigger like below,
+   
+   `wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId "application ID" -p appSecret "app Secret " -p events "onDeviceUnregister" `
+
+6. create a rule using ,
+
+   `wsk rule create --enable yourRule  triggerName  actionName `
+
+7. Check the results in the `wsk activation poll`.
+
+8. Register a device in the Bluemix application , you will get notification in the device that you have registerd. 
+ 

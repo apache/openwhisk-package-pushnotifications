@@ -7,9 +7,9 @@
 : ${WHISK_SYSTEM_AUTH:?"WHISK_SYSTEM_AUTH must be set and non-empty"}
 AUTH_KEY=$WHISK_SYSTEM_AUTH
 
-SCRIPTDIR="$(cd $(dirname "$0")/ && pwd)"
-parentdir="$(cd $(dirname "$SCRIPTDIR")/ && pwd)"
-CATALOG_HOME=$parentdir
+SCRIPTDIR="$(dirname "$0")"
+CATALOG_HOME=$SCRIPTDIR
+echo $CATALOG_HOME
 source "$CATALOG_HOME/util.sh"
 
 # pushnotifications actions

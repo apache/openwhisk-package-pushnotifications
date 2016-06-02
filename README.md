@@ -131,6 +131,8 @@ To create your own package follow the below steps,
    ```wsk action create actionName sendmessage.js -p appId "your_AppID" -p appSecret "application_Secret" -p text "message"```
    
   You can add multiple parameters to sendMessage action. Check for the available parameters [here](#action parameters)
+ Try 
+   ``````
    
 4. Create feed using the following command,
   

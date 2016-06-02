@@ -8,7 +8,7 @@
 AUTH_KEY=$WHISK_SYSTEM_AUTH
 
 SCRIPTDIR="$(cd $(dirname "$0")/ && pwd)"
-parentdir="$(dirname "$SCRIPTDIR")"
+parentdir="$(cd $(dirname "$SCRIPTDIR")/ && pwd)"
 CATALOG_HOME=$parentdir
 source "$CATALOG_HOME/util.sh"
 

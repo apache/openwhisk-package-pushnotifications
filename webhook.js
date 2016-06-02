@@ -25,12 +25,7 @@ function main(params) {
     var lifecycleEvent = (params.lifecycleEvent || 'CREATE').trim().toUpperCase();
     if (lifecycleEvent === 'CREATE' || lifecycleEvent === 'UPDATE') {
 
-        if (!params.events) {
-            var events = ["*"];
-        }
-        else {
-            var events = params.events.split(',');
-        }
+        var events = params.events;
         var body = {
             name:trigger,
             url: whiskCallbackUrl,

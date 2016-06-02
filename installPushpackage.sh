@@ -23,7 +23,7 @@ createPackage pushnotifications \
 waitForAll
 
 install "$CATALOG_HOME/pushnotifications/webhook.js" \
-    pushnotifications/changes \
+    pushnotifications/webhook \
     -a feed true \
     -a description 'pushnotifications feed' \
     -a parameters '[ {"name":"appId", "required":true}, {"name":"appSecret", "required":true},{"name":"events", "required":true} ]'\

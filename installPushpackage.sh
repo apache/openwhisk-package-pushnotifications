@@ -9,7 +9,6 @@ AUTH_KEY=$WHISK_SYSTEM_AUTH
 
 SCRIPTDIR="$(dirname "$0")"
 CATALOG_HOME=$SCRIPTDIR
-echo $CATALOG_HOME
 source "$CATALOG_HOME/util.sh"
 
 # pushnotifications actions

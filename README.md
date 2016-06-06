@@ -124,27 +124,43 @@ You can use the push package actions and feed in your own openWhisk packages. Fo
 
 To create your own package follow the below steps,
 
-1. Point to the ```wsk-pck-pushnotification``` location.
+1. Point to the ```wsk-pkg-pushnotification``` location.
 2. Create the package using ```wsk package create package-name``` command
 3. Add action  using the following command,
    
-   `wsk action create actionName sendmessage.js -p appId "your_AppID" -p appSecret "application_Secret" -p text "message to be send to device"`
+   ```wsk action create actionName sendmessage.js -p appId "your_AppID" -p appSecret "application_Secret" -p text "message"```
    
   You can add multiple parameters to sendMessage action. Check for the available parameters [here](#action parameters)
+ Try 
+   ``````
    
 4. Create feed using the following command,
   
-   `wsk action create /myNamespace/yourPackageName/webhook webhook.js -a feed true`
+   ```wsk action create /myNamespace/yourPackageName/webhook webhook.js -a feed true```
    
-5. Create a trigger like below,
+5. Create a trigger using the feed created above,
    
-   `wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId "application ID" -p appSecret "app Secret " -p events "onDeviceUnregister" `
+   ```wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId "application ID" -p appSecret "app Secret " -p events "onDeviceUnregister" ```
 
-6. create a rule using ,
+    Output will be like this,
+    
+    ```
+    {
+    "response": {
+                "name":"triggerName",
+                "eventTypes":"onDeviceRegister",
+                "url":"https://openWhiskAuth@openwhisk.ng.bluemix.net/api/v1/namespaces/myNamespace/triggers/triggerName"
+                }
+    }
+    ```
 
-   `wsk rule create --enable yourRule  triggerName  actionName `
+6. We need to create a rule that will combine the trigger and the action created in previous steps.Create the rule using ,
+
+   ```wsk rule create --enable yourRule  triggerName  actionName ```
 
 7. Check the results in the `wsk activation poll`.
 
-8. Register a device in the Bluemix application , you will get notification in the device that you have registerd. 
+8. Register a device in your Bluemix application , you can see the `rule`,`trigger` and  `action` geting executed in the openWhisk [dashboard] (https://new-console.ng.bluemix.net/openwhisk/dashboard). 
+9. The action will send a push notification.
+  
  

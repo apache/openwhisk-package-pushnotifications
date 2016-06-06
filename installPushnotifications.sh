@@ -28,7 +28,7 @@ CATALOG_HOME=$SCRIPTDIR
 source "$CATALOG_HOME/util.sh"
 
 dir=pushnotifications
-git clone https://github.com/AnanthaKrish/wsk-pkg-pushnotifications.git "$dir"
+git clone https://github.com/openwhisk/wsk-pkg-pushnotifications.git "$dir"
 
 if [ -f installPushpackage.sh ] ; then
     rm installPushpackage.sh

@@ -15,21 +15,19 @@ set -x
 
 echo Installing pushnotifications package.
 
-$WSK_CLI --apihost "$APIHOST"  package update --auth "$AUTH"  pushnotifications \
-
+$WSK_CLI --apihost "$APIHOST"  package update --auth "$AUTH"  --shared yes pushnotifications \
 -a description "pushnotifications service" \
 -a parameters '[ {"name":"appId", "required":true}, {"name":"appSecret", "required":true}]'
 
-$WSK_CLI --apihost "$APIHOST" action update --auth "$AUTH" "webhook.js" \
-pushnotifications/webhook \
+$WSK_CLI --apihost "$APIHOST" action update --auth "$AUTH" --shared yes pushnotifications/webhook "webhook.js" \
 -a feed true \
 -a description 'pushnotifications feed' \
--a parameters '[ {"name":"appId", "required":true}, {"name":"appSecret", "required":true},{"name":"events", "required":true} ]'\
+-a parameters '[ {"name":"appId", "required":true}, {"name":"appSecret", "required":true},{"name":"events", "required":true} ]' \
 -a sampleInput '{"appId":"xxx-xxx-xx", "appSecret":"yyy-yyy-yyy", "events":"onDeviceRegister"}' \
 -a sampleOutput '{"Result={"tagName": "tagName","eventType": "onDeviceRegister","applicationId": "xxx-xxx-xx"}"}'
 
-$WSK_CLI --apihost "$APIHOST" action update --auth "$AUTH" "$CATALOG_HOME/pushnotifications/sendMessage.js" \
-pushnotifications/sendMessage \
+
+$WSK_CLI --apihost "$APIHOST" action update --auth "$AUTH" --shared yes pushnotifications/sendMessage "sendMessage.js" \
 -a description 'Send Push notification to device' \
 -a parameters '[ {"name":"appId", "required":true}, {"name":"appSecret", "required":true}, {"name":"text", "required":true}, {"name":"url", "required":false}, {"name":"deviceIds", "required":false}, {"name":"platforms", "required":false},{"name":"tagNames", "required":false},{"name":"gcmPayload", "required":false},{"name":"gcmSound", "required":false},{"name":"gcmCollapseKey", "required":false},{"name":"gcmDelayWhileIdle", "required":true}, {"name":"gcmPriority", "required":true}, {"name":"gcmTimeToLive", "required":true}, {"name":"apnsBadge", "required":false}, {"name":"apnsCategory", "required":false}, {"name":"apnsIosActionKey", "required":false},{"name":"apnsPayload", "required":false},{"name":"apnsType", "required":false},{"name":"apnsSound", "required":false}]' \
 -a sampleInput '{"appId":"xxx-xxx-xx", "appSecret":"yyy-yyy-yyy", "text":"hi there"}' \

@@ -162,5 +162,3 @@ To create your own package follow the below steps,
 
 8. Register a device in your Bluemix application , you can see the `rule`,`trigger` and  `action` geting executed in the openWhisk [dashboard] (https://new-console.ng.bluemix.net/openwhisk/dashboard). 
 9. The action will send a push notification.
-  
- 

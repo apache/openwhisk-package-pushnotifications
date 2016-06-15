@@ -165,7 +165,6 @@ function main(params) {
 
     var bodyData = JSON.stringify(sendMessage);
     var request = require('request');
-    
     request({
         method: 'post',
         uri: 'https://mobile.ng.bluemix.net/imfpush/v1/apps/'+appId+'/messages',

@@ -118,31 +118,36 @@ The following is an example of creating a trigger that will be fired each time t
   $ wsk trigger create myPushTrigger --feed myPush/webhook --param events onDeviceRegister
   ```
 
-## Using Push Package Locally.
+### Using Push Package Locally.
 
 You can use the push package actions and feed in your own openWhisk packages. For using it you have to download the Push package form the  [wsk-pkg-pushnotification](https://github.com/openwhisk/wsk-pkg-pushnotifications) repository.
 
 To create your own package follow the below steps,
 
-1. Point to the ```wsk-pkg-pushnotification``` location.
-2. Create the package using ```wsk package create package-name``` command
-3. Add action  using the following command,
+1. Point to the `wsk-pkg-pushnotification` location.
+2. Create the package using `wsk package create package-name` command
+3. Add action  using the following command, 
+
+  ```
+  wsk action create actionName sendmessage.js -p appId "your_AppID" -p appSecret "application_Secret" -p text "message"
+  ```
    
-   ```wsk action create actionName sendmessage.js -p appId "your_AppID" -p appSecret "application_Secret" -p text "message"```
-   
-  You can add multiple parameters to sendMessage action. Check for the available parameters [here](#action parameters)
- Try 
-   ``````
-   
+  You can add multiple parameters to sendMessage action. 
+  Check for the available parameters [here](#action parameters)
+
 4. Create feed using the following command,
   
-   ```wsk action create /myNamespace/yourPackageName/webhook webhook.js -a feed true```
+   ```
+   wsk action create /myNamespace/yourPackageName/webhook webhook.js -a feed true
+   ```
    
 5. Create a trigger using the feed created above,
    
-   ```wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId "application ID" -p appSecret "app Secret " -p events "onDeviceUnregister" ```
+   ```
+   wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId "application ID" -p appSecret "app Secret " -p events "onDeviceUnregister" 
+   ```
 
-    Output will be like this,
+  Output will be like this:
     
     ```
     {
@@ -156,7 +161,7 @@ To create your own package follow the below steps,
 
 6. We need to create a rule that will combine the trigger and the action created in previous steps.Create the rule using ,
 
-   ```wsk rule create --enable yourRule  triggerName  actionName ```
+   `wsk rule create --enable yourRule  triggerName  actionName `
 
 7. Check the results in the `wsk activation poll`.
 8. Register a device in your Bluemix application , you can see the `rule`,`trigger` and  `action` geting executed in the openWhisk [dashboard] (https://new-console.ng.bluemix.net/openwhisk/dashboard). 

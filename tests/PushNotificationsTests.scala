@@ -34,9 +34,9 @@ class grtg
   val wsk = new Wsk()
   val credentials = TestUtils.getVCAPcredentials("imfpush")
   val appSecret = credentials.get("appSecret");
-  val url = credentials.get("url");
-  val appId = url.split("/").last;
-
+  val credentialsUrl = credentials.get("url");
+  val appId = credentialsUrl.split("/").last;
+  val url = "https://w3.ibm.com".toJson;
 
   val messageText = "This is pushnotifications Testing".toJson;
 

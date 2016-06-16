@@ -32,15 +32,13 @@ class grtg
     with WskTestHelpers{
   implicit val wskprops = WskProps()
   val wsk = new Wsk()
-  //val credentials = TestUtils.getVCAPcredentials("imfpush")
-  // val appSecret = credentials.get("appSecret");
-  // val url = credentials.get("url");
-  // val appId = url.split("/").last;
+  val credentials = TestUtils.getVCAPcredentials("imfpush")
+  val appSecret = credentials.get("appSecret");
+  val url = credentials.get("url");
+  val appId = url.split("/").last;
 
-  val appSecret = "a3e08e83-454b-47a5-81f7-07e9539f9524".toJson;
-  val appId = "6da91118-3658-4dfb-b92a-dea0ca7b88d1".toJson;
+
   val messageText = "This is pushnotifications Testing".toJson;
-  val url = "https://w3.ibm.com".toJson;
 
   behavior of "Push Package"
 

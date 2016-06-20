@@ -4,12 +4,21 @@
 # automatically
 #
 # To run this command
-# APIHOST="$EDGE_HOST" AUTH="$AUTH_KEY" WSK_CLI="$OPENWHISK_HOME/bin/wsk" ./install.sh
+# ./install.sh <apihost> <authkey> <pathtowskcli>
+# ./install.sh APIHOST="$EDGE_HOST" AUTH="$AUTH_KEY" WSK_CLI="$OPENWHISK_HOME/bin/wsk"
 # API_HOST and AUTH_KEY are found in $HOME/.wskprops
 
 set -e
 set -x
 
+if [ $# -eq 0 ]
+then
+echo "Usage: ./install.sh <apihost> <authkey> <pathtowskcli>"
+fi
+
+APIHOST="$1"
+AUTH="$2"
+WSK_CLI="$3"
 
 # pushnotifications actions
 

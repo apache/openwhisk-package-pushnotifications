@@ -26,7 +26,8 @@ echo Installing pushnotifications package.
 
 $WSK_CLI --apihost "$APIHOST"  package update --auth "$AUTH"  --shared yes pushnotifications \
 -a description "This package supports sending push notifications to your mobile device, using the IBM Bluemix Push Notifications service." \
--a parameters '[ {"name":"appId", "required":true, "description":"Bluemix application GUID"}, {"name":"appSecret", "required":true, "bindTime":true, "type":"password", "description":"Bluemix Push Service Secret"}]'
+-a parameters '[ {"name":"appId", "required":true, "description":"Bluemix application GUID"}, {"name":"appSecret", "required":true, "bindTime":true, "type":"password", "description":"Bluemix Push Service Secret"}]' \
+-a prettyName "Push Notifications"
 
 $WSK_CLI --apihost "$APIHOST" action update --auth "$AUTH" --shared yes pushnotifications/webhook "webhook.js" \
 -a feed true \

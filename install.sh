@@ -38,6 +38,6 @@ $WSK_CLI --apihost "$APIHOST" action update --auth "$AUTH" --shared yes pushnoti
 
 $WSK_CLI --apihost "$APIHOST" action update --auth "$AUTH" --shared yes pushnotifications/sendMessage "sendMessage.js" \
 -a description 'Send push notification to all application users or to a specific set of devices' \
--a parameters '[ {"name":"appId", "required":true, "description":"Bluemix application GUID"}]' \
+-a parameters '[ {"name":"appId", "required":true, "description":"Bluemix application GUID"}, {"name":"appSecret", "required":true, "bindTime":true, "type":"password", "description":"Bluemix Push Service Secret"}]' \
 -a sampleInput '{"appId":"xxx-xxx-xx", "appSecret":"yyy-yyy-yyy", "text":"hi there"}' \
 -a sampleOutput '{"pushResponse": {"messageId":"11111s","message":{"message":{"alert":"register for tag"}}}}'

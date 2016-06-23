@@ -172,5 +172,5 @@ To create your own package follow the below steps,
 
 1. git clone https://github.com/openwhisk/wsk-pkg-pushnotifications
 2. cd wsk-pkg-pushnotifications
-3. APIHOST="$EDGE_HOST" AUTH="$AUTH_KEY" WSK_CLI="$OPENWHISK_HOME/bin/wsk" ./install.sh
+3. ./install.sh APIHOST AUTH WSK_CLI
    APIHOST is the OpenWhisk hostname.  AUTH is your auth key.  WSK_CLI is location of the Openwhisk CLI binary.

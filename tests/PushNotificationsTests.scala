@@ -33,9 +33,9 @@ class grtg
   implicit val wskprops = WskProps()
   val wsk = new Wsk()
   val credentials = TestUtils.getVCAPcredentials("imfpush")
-  val appSecret = credentials.get("appSecret");
+  val appSecret = credentials.get("appSecret").toJson;
   val credentialsUrl = credentials.get("url");
-  val appId = credentialsUrl.split("/").last;
+  val appId = credentialsUrl.split("/").last.toJson;
   val url = "www.google.com".toJson;
 
   val messageText = "This is pushnotifications Testing".toJson;
@@ -56,3 +56,4 @@ class grtg
              }
            }
 }
+

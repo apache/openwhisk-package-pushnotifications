@@ -2,7 +2,7 @@
 
 # Using the Push package
 
-The `/whisk.system/pushnotifications` package enables you to work with a push service. It includes the following action and feed.
+The `/whisk.system/pushnotifications` package enables you to use Push Notification service with Whisk. It includes the following action and feed.
 
 | Entity | Type | Parameters | Description |
 | --- | --- | --- | --- |
@@ -62,49 +62,48 @@ Alternatively, you can use
 
 The `/whisk.system/pushnotifications/sendMessage` action sends push notifications to registered devices. The parameters are as follows:
 
-- `text`\* - The notification message to be shown to the user. Eg: -p text "Hi ,OpenWhisk send a notification".
+- `text`- A mandatory notification message to be sent to the user. Eg: -p text "Hi ,OpenWhisk send a push notification".
 - `url`: An optional URL that can be sent along with the alert. Eg : -p url "https:\\www.w3.ibm.com".
-- `gcmPayload` - Custom JSON payload that will be sent as part of the notification message. Eg: -p gcmPayload "{"hi":"hello"}"
-- `gcmSound` - The sound file (on device) that will be attempted to play when the notification arrives on the device .
-- `gcmCollapseKey` - This parameter identifies a group of messages
-- `gcmDelayWhileIdle` - When this parameter is set to true, it indicates that the message should not be sent until the device becomes active.
-- `gcmPriority` - Sets the priority of the message.
-- `gcmTimeToLive` - This parameter specifies how long (in seconds) the message should be kept in GCM storage if the device is offline.
-- `apnsBadge` - The number to display as the badge of the application icon.
-- `apnsCategory` -  The category identifier to be used for the interactive push notifications .
-- `apnsIosActionKey` - The title for the Action key .
-- `apnsPayload` - Custom JSON payload that will be sent as part of the notification message.
-- `apnsType` - ['DEFAULT', 'MIXED', 'SILENT'].
-- `apnsSound` - The name of the sound file in the application bundle. The sound of this file is played as an alert.
+- `gcmPayload` - An optional custom JSON payload that will be sent as part of the notification message. Eg: -p gcmPayload "{"hi":"hello"}"
+- `gcmSound` - An optional parameter. The sound file (on device) that will be attempted to play when the notification arrives on the device .
+- `gcmCollapseKey` - This optional parameter identifies a group of messages
+- `gcmDelayWhileIdle` - When this optional parameter is set to true, it indicates that the message should not be sent until the device becomes active.
+- `gcmPriority` - This optional parameter sets the priority of the message.
+- `gcmTimeToLive` - This optional parameter specifies how long (in seconds) the message should be kept in GCM storage if the device is offline.
+- `apnsBadge` - This optional parameter is the number to display as the badge of the application icon.
+- `apnsCategory` -  An optional parameter. The category identifier to be used for the interactive push notifications .
+- `apnsIosActionKey` - This optional title is for the Action key .
+- `apnsPayload` - An optional parameter. Custom JSON payload that will be sent as part of the notification message.
+- `apnsType` - An optional parameter. ['DEFAULT', 'MIXED', 'SILENT'].
+- `apnsSound` - An optional parameter. The name of the sound file in the application bundle. The sound of this file is played as an alert.
 
- Note: \* - mandatory 
 
 Here is an example of sending push notification from the pushnotification package.
 
 1. Send push notification by using the `sendMessage` action in the package binding that you created previously. Be sure to replace `/myNamespace/myPush` with your package name.
 
 ```
-wsk action invoke /myNamespace/myPush/sendMessage --blocking --result  -p url https://example.com -p text "this is my message3"  -p sound soundFileName -p deviceIds '["T1","T2"]'
+wsk action invoke /myNamespace/myPush/sendMessage --blocking --result  -p url https://example.com -p text "this is my message"  -p sound soundFileName -p deviceIds '["T1","T2"]'
 ```
 
 ```
 {
 "result": {
-"pushResponse": "{"messageId":"11111H","message":{"message":{"alert":"this is my message3","url":"http.google.com"},"settings":{"apns":{"sound":"default"},"gcm":{"sound":"default"},"target":{"deviceIds":["T1","T2"]}}}"
+"pushResponse": "{"messageId":"11111H","message":{"message":{"alert":"this is my message","url":"http.google.com"},"settings":{"apns":{"sound":"default"},"gcm":{"sound":"default"},"target":{"deviceIds":["T1","T2"]}}}"
 },
 "status": "success",
 "success": true
 }
 ```
 
-### Firing a trigger event on IBM Push Notifications Service activity
+### Creating a trigger event on IBM Push Notifications Service activity
 
 The `/whisk.system/pushnotifications/webhook` configures the IBM Push Notifications service to fire a trigger when there is a device activity such as device registration / unregistration or subscription / unsubscription in a specified application
 
 The parameters are as follows:
 
-- `appId:` The Bluemix push notification service appSecret.
-- `appSecret:` The Bluemix app GUID.
+- `appId:` The Bluemix app GUID.
+- `appSecret:` The Bluemix push notification service appSecret.
 - `events:` Supported events are `onDeviceRegister`, `onDeviceUnregister`, `onDeviceUpdate`, `onSubscribe`, `onUnsubscribe`.To get notified for all events use the wildcard character `*`.
 
 The following is an example of creating a trigger that will be fired each time there is a new device registered with the IBM Push Notifications Service application.
@@ -112,10 +111,10 @@ The following is an example of creating a trigger that will be fired each time t
 1. Create a package binding configured for your IBM Push Notifications service with your appId and appSecret.
 
   ```
-  $ wsk package bind /whisk.system/pushnotifications myNewDeviceFeed --param appID myapp --param appSecret myAppSecret --param events onDeviceRegister
+  $ wsk package bind /whisk.system/pushnotifications myNewDeviceFeed --param appId myapp --param appSecret myAppSecret --param events onDeviceRegister
   ```
 
-3. Create a trigger for the IBM Push Notifications Service `onDeviceRegister` event type using your `myPush/webhook` feed.
+3. Create a trigger for the IBM Push Notifications Service `onDeviceRegister` event type using your `myNewDeviceFeed/webhook` feed.
 
  ```
   $ wsk trigger create myPushTrigger --feed myPush/webhook --param events onDeviceRegister
@@ -123,16 +122,16 @@ The following is an example of creating a trigger that will be fired each time t
 
 ### Using Push Package Locally.
 
-You can use the push package actions and feed in your own openWhisk packages. For using it you have to download the Push package form the  [wsk-pkg-pushnotification](https://github.com/openwhisk/wsk-pkg-pushnotifications) repository.
+You can use the push package actions and feed in your own openWhisk packages. For using it you have to download the Push package form the  [openwhisk-package-pushnotifications](https://github.com/openwhisk/openwhisk-package-pushnotifications) repository.
 
 To create your own package follow the below steps,
 
-1. Point to the `wsk-pkg-pushnotification` location.
+1. Point to the `openwhisk-package-pushnotifications` location.
 2. Create the package using `wsk package create package-name` command
 3. Add action  using the following command, 
 
   ```
-  wsk action create actionName sendmessage.js -p appId "your_AppID" -p appSecret "application_Secret" -p text "message"
+  wsk action create actionName sendMessage.js -p appId "your_AppId" -p appSecret "application_Secret" -p text "message"
   ```
    
   You can add multiple parameters to sendMessage action. 
@@ -147,7 +146,7 @@ To create your own package follow the below steps,
 5. Create a trigger using the feed created above,
    
    ```
-   wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId "application ID" -p appSecret "app Secret " -p events "onDeviceUnregister" 
+   wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId "your_AppId" -p appSecret "application_Secret" -p events "onDeviceUnregister" 
    ```
 
   Output will be like this:
@@ -164,16 +163,17 @@ To create your own package follow the below steps,
 
 6. We need to create a rule that will combine the trigger and the action created in previous steps.Create the rule using ,
 
-   `wsk rule create --enable yourRule  triggerName  actionName `
+   `wsk rule create --enable yourRule triggerName actionName `
 
 7. Check the results in the `wsk activation poll`.
-8. Register a device in your Bluemix application , you can see the `rule`,`trigger` and  `action` geting executed in the openWhisk [dashboard] (https://new-console.ng.bluemix.net/openwhisk/dashboard). 
+8. Register a device in your Bluemix application , you can see the `rule`,`trigger` and  `action` getting executed in the openWhisk [dashboard] (https://new-console.ng.bluemix.net/openwhisk/dashboard). 
 9. The action will send a push notification.
 
 
 ## Deploying Push Package using `install.sh`
 
-1. git clone https://github.com/openwhisk/wsk-pkg-pushnotifications
-2. cd wsk-pkg-pushnotifications
+1. git clone https://github.com/openwhisk/openwhisk-package-pushnotifications
+2. cd openwhisk-package-pushnotifications
 3. ./install.sh APIHOST AUTH WSK_CLI
    APIHOST is the OpenWhisk hostname.  AUTH is your auth key.  WSK_CLI is location of the Openwhisk CLI binary.
+I

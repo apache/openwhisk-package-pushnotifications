@@ -2,7 +2,7 @@
 
 # Using the Push package
 
-The `/whisk.system/pushnotifications` package enables you to work with a push service. It includes the following action and feed.
+The `/whisk.system/pushnotifications` package enables you to use Push Notification service with Whisk. It includes the following action and feed.
 
 | Entity | Type | Parameters | Description |
 | --- | --- | --- | --- |
@@ -131,7 +131,7 @@ To create your own package follow the below steps,
 3. Add action  using the following command, 
 
   ```
-  wsk action create actionName sendMessage.js -p appId "your_AppID" -p appSecret "application_Secret" -p text "message"
+  wsk action create actionName sendMessage.js -p appId "your_AppId" -p appSecret "application_Secret" -p text "message"
   ```
    
   You can add multiple parameters to sendMessage action. 
@@ -146,7 +146,7 @@ To create your own package follow the below steps,
 5. Create a trigger using the feed created above,
    
    ```
-   wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId "your_AppID" -p appSecret "application_Secret" -p events "onDeviceUnregister" 
+   wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId "your_AppId" -p appSecret "application_Secret" -p events "onDeviceUnregister" 
    ```
 
   Output will be like this:

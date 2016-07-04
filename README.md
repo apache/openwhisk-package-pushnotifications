@@ -62,7 +62,7 @@ Alternatively, you can use
 
 The `/whisk.system/pushnotifications/sendMessage` action sends push notifications to registered devices. The parameters are as follows:
 
-- `text`\* - The notification message to be shown to the user. Eg: -p text "Hi ,OpenWhisk send a notification".
+- `text`- A mandatory notification message to be sent to the user. Eg: -p text "Hi ,OpenWhisk send a push notification".
 - `url`: An optional URL that can be sent along with the alert. Eg : -p url "https:\\www.w3.ibm.com".
 - `gcmPayload` - An optional custom JSON payload that will be sent as part of the notification message. Eg: -p gcmPayload "{"hi":"hello"}"
 - `gcmSound` - An optional parameter. The sound file (on device) that will be attempted to play when the notification arrives on the device .
@@ -77,7 +77,6 @@ The `/whisk.system/pushnotifications/sendMessage` action sends push notification
 - `apnsType` - An optional parameter. ['DEFAULT', 'MIXED', 'SILENT'].
 - `apnsSound` - An optional parameter. The name of the sound file in the application bundle. The sound of this file is played as an alert.
 
- > ***Note***: \* - mandatory 
 
 Here is an example of sending push notification from the pushnotification package.
 

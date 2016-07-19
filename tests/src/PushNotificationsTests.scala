@@ -27,7 +27,7 @@ import spray.json.pimpAny
 import common._
 
 @RunWith(classOf[JUnitRunner])
-class grtg
+class PushNotificationsTests
     extends TestHelpers
     with WskTestHelpers{
   implicit val wskprops = WskProps()

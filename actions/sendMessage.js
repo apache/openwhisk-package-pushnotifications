@@ -181,7 +181,9 @@ function main(params) {
         if(error){
             return whisk.error();
         }
-        return whisk.done({pushResponse: JSON.stringify(body, undefined, 4)});
+        var j = JSON.parse(body)
+        return whisk.done(j);
+      //  return whisk.done({pushResponse: JSON.stringify(body, undefined, 4)});
     });
     return whisk.async();
 }

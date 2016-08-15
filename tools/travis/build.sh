@@ -37,7 +37,7 @@ WHISKPROPS_FILE="$ROOTDIR/whisk.properties"
 sed -i 's:^[ \t]*vcap.services.file[ \t]*=\([ \t]*.*\)$:vcap.services.file='$VCAP_SERVICES_FILE':'  $WHISKPROPS_FILE
 cat whisk.properties
 
-WSK_CLI=$ROOTDIR/bin/wsk
+WSK_CLI=$ROOTDIR/bin/go-cli/wsk
 AUTH_KEY=$(cat $ROOTDIR/ansible/files/auth.whisk.system)
 EDGE_HOST=$(grep '^edge.host=' $WHISKPROPS_FILE | cut -d'=' -f2) 
 

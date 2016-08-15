@@ -32,8 +32,8 @@ PACKAGE_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo Uninstalling pushnotifications package \
 
-$WSK_CLI --apihost $APIHOST action delete --auth $AUTH pushnotifications/webhook
+$WSK_CLI -i --apihost $APIHOST action delete --auth $AUTH pushnotifications/webhook
 
-$WSK_CLI --apihost $APIHOST action delete --auth $AUTH pushnotifications/sendMessage
+$WSK_CLI -i --apihost $APIHOST action delete --auth $AUTH pushnotifications/sendMessage
 
-$WSK_CLI --apihost $APIHOST package delete --auth $AUTH pushnotifications
+$WSK_CLI -i --apihost $APIHOST package delete --auth $AUTH pushnotifications

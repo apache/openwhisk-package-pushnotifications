@@ -5,7 +5,7 @@
 #
 # To run this command
 # ./install.sh <apihost> <authkey> <pathtowskcli>
-# ./install.sh APIHOST="$EDGE_HOST" AUTH="$AUTH_KEY" WSK_CLI="$OPENWHISK_HOME/bin/wsk"
+# ./install.sh APIHOST="$EDGE_HOST" AUTH="$AUTH_KEY" WSK_CLI="$OPENWHISK_HOME/bin/go-cli/wsk"
 # API_HOST and AUTH_KEY are found in $HOME/.wskprops
 
 set -e
@@ -21,6 +21,8 @@ AUTH="$2"
 WSK_CLI="$3"
 
 PACKAGE_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+export WSK_CONFIG_FILE= # override local property file to avoid namespace clashes
 
 # pushnotifications actions
 

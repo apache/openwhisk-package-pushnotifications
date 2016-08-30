@@ -45,14 +45,14 @@ class PushNotificationsTests
     it should "Send Notification action" in {
            val name = "/whisk.system/pushnotifications/sendMessage"
              withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appId" -> appId, "text" -> messageText))){
-                _.fields("response").toString should include ("message")
+                 _.response.result.get.toString should include ("message")
              }
     }
 
     it should "Send Notification action with url" in {
             val name = "/whisk.system/pushnotifications/sendMessage"
             withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appId" -> appId, "text" -> messageText, "url"-> url))){
-               _.fields("response").toString should include ("message")
+                _.response.result.get.toString should include ("message")
              }
            }
 }

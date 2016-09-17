@@ -5,6 +5,7 @@ ROOTDIR="$SCRIPTDIR/../../openwhisk"
 
 cd $ROOTDIR
 
+mkdir $ROOTDIR/tests/src/packages
 cp $ROOTDIR/../tests/src/* $ROOTDIR/tests/src/packages/
 
 tools/build/scanCode.py .

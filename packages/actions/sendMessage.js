@@ -43,153 +43,154 @@ module.paths.push('/usr/lib/node_modules');
 var https = require('https');
 
 function main(params) {
-    validateParams(params);
+    if (validateParams(params)) {
 
-    var appId = params.appId;
-    var appSecret = params.appSecret;
+        var appId = params.appId;
+        var appSecret = params.appSecret;
 
-    // message section settings
-    var messageUrl = params.url;
-    var messageText = params.text;
+        // message section settings
+        var messageUrl = params.url;
+        var messageText = params.text;
 
-    // target section settings -- each param should be an array of string
-    var targetDeviceIds = params.deviceIds;
-    var targetPlatforms = params.platforms;
-    var targetTagNames = params.tagNames;
+        // target section settings -- each param should be an array of string
+        var targetDeviceIds = params.deviceIds;
+        var targetPlatforms = params.platforms;
+        var targetTagNames = params.tagNames;
 
-    // apns settings
-    var apnsBadge = params.apnsBadge; // should be an int
-    var apnsCategory = params.apnsCategory;
-    var apnsActionKeyTitle = params.apnsIosActionKey;
-    var apnsSound = params.apnsSound;
-    var apnsPayload = params.apnsPayload;
-    var apnsType = params.apnsType;
+        // apns settings
+        var apnsBadge = params.apnsBadge; // should be an int
+        var apnsCategory = params.apnsCategory;
+        var apnsActionKeyTitle = params.apnsIosActionKey;
+        var apnsSound = params.apnsSound;
+        var apnsPayload = params.apnsPayload;
+        var apnsType = params.apnsType;
 
-    // gcm settings
-    var gcmCollapseKey = params.gcmCollapseKey;
-    var gcmDelayWhileIdle = params.gcmDelayWhileIdle;
-    var gcmPayload = params.gcmPayload;
-    var gcmPriority = params.gcmPriority;
-    var gcmSound = params.gcmSound;
-    var timeToLive = params.gcmTimeToLive;
+        // gcm settings
+        var gcmCollapseKey = params.gcmCollapseKey;
+        var gcmDelayWhileIdle = params.gcmDelayWhileIdle;
+        var gcmPayload = params.gcmPayload;
+        var gcmPriority = params.gcmPriority;
+        var gcmSound = params.gcmSound;
+        var timeToLive = params.gcmTimeToLive;
 
-    var sendMessage = {}
+        var sendMessage = {};
 
-    // create message section
-    var message = {}
-    if (messageText) {
-        message.alert = messageText;
-    }
-    if (messageUrl) {
-        message.url = messageUrl;
-    }
+        // create message section
+        var message = {};
+        if (messageText) {
+            message.alert = messageText;
+        }
+        if (messageUrl) {
+            message.url = messageUrl;
+        }
 
-    if (isEmpty(message)) {
-        whisk.error("No message to send");
-        return {message: "IBM Push Notifications action: no message body text or url"};
-    } else {
-        sendMessage.message = message;
-    }
+        if (isEmpty(message)) {
+            whisk.error("No message to send");
+            return {message: "IBM Push Notifications action: no message body text or url"};
+        } else {
+            sendMessage.message = message;
+        }
 
-    // create target section
-    var target = {};
-    if (targetDeviceIds) {
-        target.deviceIds = targetDeviceIds;
-    }
-    if (targetPlatforms) {
-        target.platforms = targetPlatforms;
-    }
-    if (targetTagNames) {
-        target.tagNames = targetTagNames;
-    }
+        // create target section
+        var target = {};
+        if (targetDeviceIds) {
+            target.deviceIds = targetDeviceIds;
+        }
+        if (targetPlatforms) {
+            target.platforms = targetPlatforms;
+        }
+        if (targetTagNames) {
+            target.tagNames = targetTagNames;
+        }
 
-    if (isEmpty(target)) {
-        console.log("No target set, broadcasting message to all registered devices");
-    } else {
-        sendMessage.target = target;
-    }
+        if (isEmpty(target)) {
+            console.log("No target set, broadcasting message to all registered devices");
+        } else {
+            sendMessage.target = target;
+        }
 
-    // create apns settings section
-    var apns = {};
-    if (apnsBadge) {
-        apns.badge = apnsBadge;
-    }
-    if (apnsCategory) {
-        apns.category = apnsCategory;
-    }
-    if (apnsActionKeyTitle) {
-        apns.iosActionKey = apnsActionKeyTitle;
-    }
-    if (apnsSound) {
-        apns.sound = apnsSound;
-    }
-    if (apnsType) {
-        apns.type = apnsType;
-    }
-    if (apnsPayload) {
-        apns.payload = apnsPayload;
-    }
+        // create apns settings section
+        var apns = {};
+        if (apnsBadge) {
+            apns.badge = apnsBadge;
+        }
+        if (apnsCategory) {
+            apns.category = apnsCategory;
+        }
+        if (apnsActionKeyTitle) {
+            apns.iosActionKey = apnsActionKeyTitle;
+        }
+        if (apnsSound) {
+            apns.sound = apnsSound;
+        }
+        if (apnsType) {
+            apns.type = apnsType;
+        }
+        if (apnsPayload) {
+            apns.payload = apnsPayload;
+        }
 
-    if (!isEmpty(apns)) {
-        sendMessage.settings = {};
-        sendMessage.settings.apns = apns;
-    }
-
-    // create gcm settings section
-    var gcm = {};
-    if (gcmCollapseKey) {
-        gcm.collapseKey = gcmCollapseKey;
-    }
-    if (gcmDelayWhileIdle) {
-        gcm.delayWhileIdle = gcmDelayWhileIdle;
-    }
-    if (gcmPayload) {
-        gcm.payload = gcmPayload;
-    }
-    if (gcmPriority ) {
-        gcm.priority = gcmPriority;
-    }
-    if (gcmSound) {
-        gcm.sound = gcmSound;
-    }
-    if (timeToLive) {
-        gcm.timeToLive = timeToLive;
-    }
-
-    if (!isEmpty(gcm)) {
-        if (!sendMessage.settings) {
+        if (!isEmpty(apns)) {
             sendMessage.settings = {};
+            sendMessage.settings.apns = apns;
         }
-        sendMessage.settings.gcm = gcm;
+
+        // create gcm settings section
+        var gcm = {};
+        if (gcmCollapseKey) {
+            gcm.collapseKey = gcmCollapseKey;
+        }
+        if (gcmDelayWhileIdle) {
+            gcm.delayWhileIdle = gcmDelayWhileIdle;
+        }
+        if (gcmPayload) {
+            gcm.payload = gcmPayload;
+        }
+        if (gcmPriority) {
+            gcm.priority = gcmPriority;
+        }
+        if (gcmSound) {
+            gcm.sound = gcmSound;
+        }
+        if (timeToLive) {
+            gcm.timeToLive = timeToLive;
+        }
+
+        if (!isEmpty(gcm)) {
+            if (!sendMessage.settings) {
+                sendMessage.settings = {};
+            }
+            sendMessage.settings.gcm = gcm;
+        }
+
+        var bodyData = JSON.stringify(sendMessage);
+        var request = require('request');
+        var promise = new Promise(function (resolve, reject) {
+            request({
+                method: 'post',
+                uri: 'https://mobile.ng.bluemix.net/imfpush/v1/apps/' + appId + '/messages',
+                headers: {
+                    'appSecret': appSecret,
+                    'Accept': 'application/json',
+                    'Accept-Language': 'en-US',
+                    'Content-Type': 'application/json',
+                    'Content-Length': bodyData.length
+                },
+                body: bodyData
+            }, function (error, response, body) {
+                if (error) {
+                    reject(error);
+                }
+                var j = JSON.parse(body);
+                resolve(j);
+            });
+        });
+        return promise;
     }
-
-    var bodyData = JSON.stringify(sendMessage);
-    var request = require('request');
-    request({
-        method: 'post',
-        uri: 'https://mobile.ng.bluemix.net/imfpush/v1/apps/'+appId+'/messages',
-        headers :{
-           'appSecret': appSecret,
-           'Accept': 'application/json',
-           'Accept-Language': 'en-US',
-           'Content-Type': 'application/json',
-           'Content-Length': bodyData.length
-        },
-        body:bodyData
-    }, function(error, response, body) {
-
-        if(error){
-            return whisk.error();
-        }
-        var j = JSON.parse(body)
-        return whisk.done(j);
-      //  return whisk.done({pushResponse: JSON.stringify(body, undefined, 4)});
-    });
-    return whisk.async();
 }
 
 function isEmpty(obj) {
-    if (obj == null) return true;
+    if (obj === null) return true;
     if (obj.length > 0) return false;
     if (obj.length === 0) return true;
     for (var key in obj) {
@@ -202,10 +203,11 @@ function isEmpty(obj) {
 function validateParams(params) {
     if (!params.appId) {
         whisk.error('appId / appGUID of the application is required.');
-        return;
+        return false;
     }
     if (!params.appSecret) {
         whisk.error('appSecret of the application is required.');
-        return;
+        return false;
     }
+    return true;
 }

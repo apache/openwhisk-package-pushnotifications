@@ -25,7 +25,6 @@ cd $WHISKDIR/ansible
 
 $ANSIBLE_CMD wipe.yml
 $ANSIBLE_CMD openwhisk.yml
-$ANSIBLE_CMD postdeploy.yml
 
 cd $WHISKDIR
 
@@ -40,6 +39,9 @@ WSK_CLI=$WHISKDIR/bin/wsk
 AUTH_KEY=$(cat $WHISKDIR/ansible/files/auth.whisk.system)
 EDGE_HOST=$(grep '^edge.host=' $WHISKPROPS_FILE | cut -d'=' -f2)
 WSK_NAMESPACE=/whisk.system
+
+# Set Environment
+export OPENWHISK_HOME=$WHISKDIR
 
 # Install the package
 source $ROOTDIR/packages/installCatalog.sh $AUTH_KEY $EDGE_HOST $WSK_NAMESPACE $WSK_CLI

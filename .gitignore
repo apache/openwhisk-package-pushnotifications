@@ -1,2 +1,5 @@
+# Gradle
+.gradle
+build/
 tests/credentials.json
 openwhisk

@@ -55,14 +55,17 @@ function main(params) {
                 'Content-Type': 'application/json'
             }
         };
-        request(options, function(error, response, body){
-            if (error) {
-                return whisk.error();
-            }
-            return whisk.done({response: body});
+        var promise = new Promise(function(resolve, reject) {
+            request(options, function (error, response, body) {
+                if (error) {
+                    reject(error);
+                }
+                resolve({response: body});
+            });
         });
-    }
-    if (lifecycleEvent === 'DELETE') {
+
+        return promise;
+    } else if (lifecycleEvent === 'DELETE') {
         var options = {
             method: 'DELETE',
             url: registrationEndpoint,
@@ -70,14 +73,17 @@ function main(params) {
                 'appSecret': appSecret
             }
         };
-        request(options, function(error, response, body) {
-            if (error) {
-                return whisk.error();
-            }
-            return whisk.done({response: body});
+        var promise = new Promise(function(resolve, reject) {
+            request(options, function (error, response, body) {
+                if (error) {
+                    reject(error);
+                }
+                resolve({response: body});
+            });
         });
+
+        return promise;
     }
-    return whisk.async();
 }
 
 function parseQName(qname) {

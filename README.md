@@ -160,10 +160,10 @@ To create your own package follow the below steps,
 9. The action will send a push notification.
 
 
-## Deploying Push Package using `install.sh`
+## Deploying Push Package using `installCatalog.sh`
 
 1. git clone https://github.com/openwhisk/openwhisk-package-pushnotifications
-2. cd openwhisk-package-pushnotifications
-3. ./install.sh APIHOST AUTH WSK_CLI
-   APIHOST is the OpenWhisk hostname.  AUTH is your auth key.  WSK_CLI is location of the Openwhisk CLI binary.
+2. cd openwhisk-package-pushnotifications/packages
+3. ./installCatalog.sh AUTH APIHOST NAMESPACE WSK_CLI
+   AUTH is your auth key.  APIHOST is the OpenWhisk hostname.  NAMESPACE is the namespace to install the package in.  WSK_CLI is location of the Openwhisk CLI binary.
 I

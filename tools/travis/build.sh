@@ -40,10 +40,11 @@ cat whisk.properties
 
 WSK_CLI=$ROOTDIR/bin/wsk
 AUTH_KEY=$(cat $ROOTDIR/ansible/files/auth.whisk.system)
-EDGE_HOST=$(grep '^edge.host=' $WHISKPROPS_FILE | cut -d'=' -f2) 
+EDGE_HOST=$(grep '^edge.host=' $WHISKPROPS_FILE | cut -d'=' -f2)
+WSK_NAMESPACE=/whisk.system
 
 # Install the package
-source $ROOTDIR/../install.sh $EDGE_HOST $AUTH_KEY $WSK_CLI
+source $ROOTDIR/../packages/installCatalog.sh $AUTH_KEY $EDGE_HOST $WSK_NAMESPACE $WSK_CLI
 
 #Test only the test cases classes in tests/src (Openwhisk dependencies are needed)
 X="./gradlew :tests:test "

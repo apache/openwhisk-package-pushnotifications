@@ -15,16 +15,11 @@
  */
 package packages
 
+import common.{TestHelpers, Wsk, WskProps, WskTestHelpers, _}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-
-import common.TestHelpers
-import common.Wsk
-import common.WskProps
-import common.WskTestHelpers
 import spray.json.DefaultJsonProtocol.StringJsonFormat
 import spray.json.pimpAny
-import common._
 
 @RunWith(classOf[JUnitRunner])
 class PushNotificationsTests

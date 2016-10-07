@@ -35,7 +35,7 @@ The following is an example of creating a package binding.
 4. Create a package binding with the `/whisk.system/pushnotifications`.
 
   ```
-  $ wsk package bind /whisk.system/pushnotifications myPush -p appId "myAppID" -p appSecret "myAppSecret"
+  $ wsk package bind /whisk.system/pushnotifications myPush -p appId myAppID -p appSecret myAppSecret
   ```
 
 5. Verify that the package binding exists.
@@ -76,7 +76,7 @@ Here is an example of sending push notification from the pushnotification packag
 1. Send push notification by using the `sendMessage` action in the package binding that you created previously. Be sure to replace `/myNamespace/myPush` with your package name.
 
 ```
-wsk action invoke /myNamespace/myPush/sendMessage --blocking --result  -p url https://example.com -p text "this is my message"  -p sound soundFileName -p deviceIds '["T1","T2"]'
+wsk action invoke /myNamespace/myPush/sendMessage --blocking --result  -p url https://example.com -p text "this is my message"  -p sound soundFileName -p deviceIds "[\"T1\",\"T2\"]"
 ```
 
 ```
@@ -124,7 +124,7 @@ To create your own package follow the below steps,
 3. Add action  using the following command, 
 
   ```
-  wsk action create actionName sendMessage.js -p appId "your_AppId" -p appSecret "application_Secret" -p text "message"
+  wsk action create actionName sendMessage.js -p appId your_AppId -p appSecret application_Secret -p text "message"
   ```
    
   You can add multiple parameters to sendMessage action. 
@@ -139,7 +139,7 @@ To create your own package follow the below steps,
 5. Create a trigger using the feed created above,
    
    ```
-   wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId "your_AppId" -p appSecret "application_Secret" -p events "onDeviceUnregister" 
+   wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId your_AppId -p appSecret application_Secret -p events onDeviceUnregister 
    ```
 
   Output will be like this:

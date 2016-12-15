@@ -38,12 +38,13 @@ echo Installing pushnotifications package.
 $WSK_CLI -i --apihost "$APIHOST"  package update --auth "$AUTH"  --shared yes "$NAMESPACE/pushnotifications" \
 -a description "This package supports sending push notifications to your mobile device, using the IBM Bluemix Push Notifications service." \
 -a parameters '[ {"name":"appId", "required":true, "bindTime":true, "description":"Bluemix application GUID"}, {"name":"appSecret", "required":true, "bindTime":true, "type":"password", "description":"Bluemix Push Service Secret"}]' \
--a prettyName "Push Notifications"
+-a prettyName "Push Notifications" \
+-p bluemixServiceName 'imfpush'
 
 $WSK_CLI -i --apihost "$APIHOST" action update --auth "$AUTH" "$NAMESPACE/pushnotifications/webhook" "$PACKAGE_HOME/feeds/webhook.js" \
 -a feed true \
 -a description 'pushnotifications feed' \
--a parameters '[ {"name":"appId", "required":true, "bindTime":true,"description":"Bluemix application GUID"}, {"name":"appSecret", "required":true, "bindTime":true, "type":"password", "description":"Bluemix Push Service Secret"},{"name":"events", "required":true, "description":"Name of the event user want to subscribe"} ]' \
+-a parameters '[ {"name":"appId", "required":true, "bindTime":true, "description":"Bluemix application GUID"}, {"name":"appSecret", "required":true, "bindTime":true, "type":"password", "description":"Bluemix Push Service Secret"},{"name":"events", "required":true, "description":"Name of the event user want to subscribe"} ]' \
 -a sampleInput '{"appId":"xxx-xxx-xx", "appSecret":"yyy-yyy-yyy", "events":"onDeviceRegister"}' \
 -a sampleOutput '{"tagName": "tagName","eventType": "onDeviceRegister","applicationId": "xxx-xxx-xx"}'
 

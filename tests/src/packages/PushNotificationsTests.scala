@@ -30,7 +30,7 @@ class PushNotificationsTests
   val credentials = TestUtils.getVCAPcredentials("imfpush")
   val appSecret = credentials.get("appSecret").toJson;
   val credentialsUrl = credentials.get("url");
-  val appId = credentialsUrl.split("/").last.toJson;
+  val appGuid = credentialsUrl.split("/").last.toJson;
   val url = "www.google.com".toJson;
 
   val messageText = "This is pushnotifications Testing".toJson;
@@ -39,14 +39,14 @@ class PushNotificationsTests
 
     it should "Send Notification action" in {
            val name = "/whisk.system/pushnotifications/sendMessage"
-             withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appId" -> appId, "text" -> messageText))){
+             withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appGuid" -> appGuid, "text" -> messageText))){
                  _.response.result.get.toString should include ("message")
              }
     }
 
     it should "Send Notification action with url" in {
             val name = "/whisk.system/pushnotifications/sendMessage"
-            withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appId" -> appId, "text" -> messageText, "url"-> url))){
+            withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appGuid" -> appGuid, "text" -> messageText, "url"-> url))){
                 _.response.result.get.toString should include ("message")
              }
            }

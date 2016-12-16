@@ -16,7 +16,7 @@
 /**
  *  Feed to create a webhook for IBM Push Notifications service
  *
- *  @param {string} appId - appId to create webhook
+ *  @param {string} appGuid - appGuid to create webhook
  *  @param {string} appSecret - appSecret of the application
  *  @param {string} events - list of the events the webhook should fire on
  *  @return {object} whisk async
@@ -32,7 +32,7 @@ function main(params) {
     var endpoint = 'openwhisk.ng.bluemix.net';
     // URL of the whisk system. The calls of push service will go here.
     var whiskCallbackUrl = 'https://' + whisk.getAuthKey() + "@" + endpoint + '/api/v1/namespaces/' + namespace + '/triggers/' + trigger;
-    var appId = params.appId;
+    var appId = params.appGuid || params.appId;
     var appSecret = params.appSecret;
     // The URL to create the webhook on push service
     var registrationEndpoint = 'https://mobile.ng.bluemix.net/imfpush/v1/apps/' + appId + '/webhooks';

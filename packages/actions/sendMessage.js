@@ -1,5 +1,5 @@
 /*
-* Copyright 2016-2017 IBM Corporation
+* Copyright 2016 IBM Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 *  Action to Send Push Notification using IBM Push Notifications service
 *
-*  @param {string} appId - appId to create webhook
+*  @param {string} appGuid - appGuid to create webhook
 *  @param {string} appSecret - appSecret of the application
 *  @param {string} url - An optional URL that can be sent along with the alert. Eg : -p url "https:\\www.w3.ibm.com".
 *  @param {object} text - The notification message to be shown to the user. Eg: -p text "Hi ,OpenWhisk send a notification"
@@ -66,7 +66,7 @@ var https = require('https');
 function main(params) {
   if (validateParams(params)) {
 
-    var appId = params.appId;
+    var appId = params.appGuid || params.appId;
     var appSecret = params.appSecret;
 
     // message section settings
@@ -347,7 +347,7 @@ function isEmpty(obj) {
 }
 
 function validateParams(params) {
-  if (!params.appId) {
+  if (!params.appId && !params.appGuid) {
     whisk.error('appId / appGUID of the application is required.');
     return false;
   }

@@ -31,7 +31,7 @@ function main(params) {
     var namespace = parsedName.namespace;
     var endpoint = 'openwhisk.ng.bluemix.net';
     // URL of the whisk system. The calls of push service will go here.
-    var whiskCallbackUrl = 'https://' + whisk.getAuthKey() + "@" + endpoint + '/api/v1/namespaces/' + namespace + '/triggers/' + trigger;
+    var whiskCallbackUrl = 'https://' + process.env.__OW_API_KEY + "@" + endpoint + '/api/v1/namespaces/' + namespace + '/triggers/' + trigger;
     var appId = params.appGuid || params.appId;
     var appSecret = params.appSecret;
     // The URL to create the webhook on push service

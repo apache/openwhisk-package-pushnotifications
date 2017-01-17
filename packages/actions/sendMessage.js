@@ -15,7 +15,6 @@
 */
 
 /**
-
 *  Action to Send Push Notification using IBM Push Notifications service
 *
 *  @param {string} appGuid - appGuid to create webhook
@@ -64,275 +63,279 @@ module.paths.push('/usr/lib/node_modules');
 var https = require('https');
 
 function main(params) {
-  if (validateParams(params)) {
 
-    var appId = params.appGuid || params.appId;
-    var appSecret = params.appSecret;
-
-    // message section settings
-    var messageUrl = params.url;
-    var messageText = params.text;
-
-    // target section settings -- each param should be an array of string
-    var targetDeviceIds = params.deviceIds;
-    var targetPlatforms = params.platforms;
-    var targetTagNames = params.tagNames;
-
-    // apns settings
-    var apnsBadge = params.apnsBadge; // should be an int
-    var apnsCategory = params.apnsCategory;
-    var apnsActionKeyTitle = params.apnsIosActionKey;
-    var apnsSound = params.apnsSound;
-    var apnsPayload = params.apnsPayload;
-    var apnsType = params.apnsType;
-
-    // gcm settings
-    var gcmCollapseKey = params.gcmCollapseKey;
-    var gcmDelayWhileIdle = params.gcmDelayWhileIdle;
-    var gcmPayload = params.gcmPayload;
-    var gcmPriority = params.gcmPriority;
-    var gcmSound = params.gcmSound;
-    var gcmTimeToLive = params.gcmTimeToLive;
-    var gcmSync = params.gcmSync;
-    var gcmVisibility = params.gcmVisibility;
-
-    //GCM Style settings
-    var gcmStyleType = params.gcmStyleType;
-    var gcmStyleTitle = params.gcmStyleTitle;
-    var gcmStyleUrl = params.gcmStyleUrl;
-    var gcmStyleText = params.gcmStyleText;
-    var gcmStyleLines = params.gcmStyleLines;
-
-    //Firefox web settings
-    var fireFoxTitle = params.fireFoxTitle;
-    var fireFoxIconUrl = params.fireFoxIconUrl;
-    var fireFoxTimeToLive = params.fireFoxTimeToLive;
-    var fireFoxPayload = params.fireFoxPayload;
-
-    //Chrome web settings
-    var chromeTitle = params.chromeTitle;
-    var chromeIconUrl = params.chromeIconUrl;
-    var chromeTimeToLive = params.chromeTimeToLive;
-    var chromePayload = params.chromePayload;
-
-    //Chrome Apps & Extensions web settings
-    var chromeAppExtTitle = params.chromeAppExtTitle;
-    var chromeAppExtCollapseKey = params.chromeAppExtCollapseKey;
-    var chromeAppExtDelayWhileIdle = params.chromeAppExtDelayWhileIdle;
-    var chromeAppExtIconUrl = params.chromeAppExtIconUrl;
-    var chromeAppExtTimeToLive = params.chromeAppExtTimeToLive;
-    var chromeAppExtPayload = params.chromeAppExtPayload;
-
-    var sendMessage = {};
-
-    // create message section
-    var message = {};
-    if (messageText) {
-      message.alert = messageText;
-    }
-    if (messageUrl) {
-      message.url = messageUrl;
-    }
-
-    if (isEmpty(message)) {
-      whisk.error("No message to send");
-      return {message: "IBM Push Notifications action: no message body text or url"};
-    } else {
-      sendMessage.message = message;
-    }
-
-    // create target section
-    var target = {};
-    if (targetDeviceIds) {
-      target.deviceIds = targetDeviceIds;
-    }
-    if (targetPlatforms) {
-      target.platforms = targetPlatforms;
-    }
-    if (targetTagNames) {
-      target.tagNames = targetTagNames;
-    }
-
-    if (isEmpty(target)) {
-      console.log("No target set, broadcasting message to all registered devices");
-    } else {
-      sendMessage.target = target;
-    }
-
-    // create apns settings section
-    var apns = {};
-    if (apnsBadge) {
-      apns.badge = apnsBadge;
-    }
-    if (apnsCategory) {
-      apns.category = apnsCategory;
-    }
-    if (apnsActionKeyTitle) {
-      apns.iosActionKey = apnsActionKeyTitle;
-    }
-    if (apnsSound) {
-      apns.sound = apnsSound;
-    }
-    if (apnsType) {
-      apns.type = apnsType;
-    }
-    if (apnsPayload) {
-      apns.payload = apnsPayload;
-    }
-
-    if (!isEmpty(apns)) {
-      sendMessage.settings = {};
-      sendMessage.settings.apns = apns;
-    }
-
-    // create gcm settings section
-    var gcm = {};
-    if (gcmCollapseKey) {
-      gcm.collapseKey = gcmCollapseKey;
-    }
-    if (gcmDelayWhileIdle) {
-      gcm.delayWhileIdle = gcmDelayWhileIdle;
-    }
-    if (gcmPayload) {
-      gcm.payload = gcmPayload;
-    }
-    if (gcmPriority) {
-      gcm.priority = gcmPriority;
-    }
-    if (gcmSound) {
-      gcm.sound = gcmSound;
-    }
-    if (gcmTimeToLive) {
-      gcm.timeToLive = gcmTimeToLive;
-    }
-    if (gcmVisibility) {
-      gcm.visibility = gcmVisibility;
-    }
-    if (gcmSync) {
-      gcm.sync = gcmSync;
-    }
-    var gcmStyle = {};
-    if(gcmStyleType){
-      gcmStyle.type = gcmStyleType;
-    }
-    if (gcmStyleTitle) {
-      gcmStyle.title = gcmStyleTitle;
-    }
-    if (gcmStyleUrl) {
-      gcmStyle.url = gcmStyleUrl;
-    }
-    if (gcmStyleText) {
-      gcmStyle.text = gcmStyleText;
-    }
-    if (gcmStyleLines) {
-      gcmStyle.lines = gcmStyleLines;
-    }
-    if (!isEmpty(gcmStyle)) {
-      gcm.style = gcmStyle;
-    }
-
-    if (!isEmpty(gcm)) {
-      if (!sendMessage.settings) {
-        sendMessage.settings = {};
-      }
-      sendMessage.settings.gcm = gcm;
-    }
-
-    // create FireFox settings section
-    var firefoxWeb = {};
-    if (fireFoxTitle){
-      firefoxWeb.title = fireFoxTitle;
-    }
-    if (fireFoxIconUrl) {
-      firefoxWeb.iconUrl = fireFoxIconUrl;
-    }
-    if (fireFoxTimeToLive) {
-      firefoxWeb.timeToLive = fireFoxTimeToLive;
-    }
-    if (fireFoxPayload) {
-      firefoxWeb.payload = fireFoxPayload;
-    }
-
-    if (!isEmpty(firefoxWeb)) {
-      if (!sendMessage.settings) {
-        sendMessage.settings = {};
-      }
-      sendMessage.settings.firefoxWeb = firefoxWeb;
-    }
-
-    // create Chrome settings section
-    var chromeWeb = {};
-    if (chromeTitle){
-      chromeWeb.title = chromeTitle;
-    }
-    if (chromeIconUrl) {
-      chromeWeb.iconUrl = chromeIconUrl;
-    }
-    if (chromeTimeToLive) {
-      chromeWeb.timeToLive = chromeTimeToLive;
-    }
-    if (chromePayload) {
-      chromeWeb.payload = chromePayload;
-    }
-
-    if (!isEmpty(chromeWeb)) {
-      if (!sendMessage.settings) {
-        sendMessage.settings = {};
-      }
-      sendMessage.settings.chromeWeb = chromeWeb;
-    }
-
-    // create Chrome Apps & Extensions settings section
-    var chromeAppExt = {};
-    if (chromeAppExtTitle){
-      chromeAppExt.title = chromeAppExtTitle;
-    }
-    if (chromeAppExtCollapseKey) {
-      chromeAppExt.collapseKey = chromeAppExtCollapseKey;
-    }
-    if (chromeAppExtDelayWhileIdle) {
-      chromeAppExt.delayWhileIdle = chromeAppExtDelayWhileIdle;
-    }
-    if (chromeAppExtIconUrl) {
-      chromeAppExt.iconUrl = chromeAppExtIconUrl;
-    }
-    if (chromeAppExtTimeToLive) {
-      chromeAppExt.timeToLive = chromeAppExtTimeToLive;
-    }
-    if (chromeAppExtPayload) {
-      chromeAppExt.payload = chromeAppExtPayload;
-    }
-    if (!isEmpty(chromeAppExt)) {
-      if (!sendMessage.settings) {
-        sendMessage.settings = {};
-      }
-      sendMessage.settings.chromeAppExt = chromeAppExt;
-    }
-
-    var bodyData = JSON.stringify(sendMessage);
-    var request = require('request');
-    var promise = new Promise(function (resolve, reject) {
-      request({
-        method: 'post',
-        uri: 'https://mobile.ng.bluemix.net/imfpush/v1/apps/' + appId + '/messages',
-        headers: {
-          'appSecret': appSecret,
-          'Accept': 'application/json',
-          'Accept-Language': 'en-US',
-          'Content-Type': 'application/json',
-          'Content-Length': bodyData.length
-        },
-        body: bodyData
-      }, function (error, response, body) {
-        if (error) {
-          reject(error);
-        }
-        var j = JSON.parse(body);
-        resolve(j);
-      });
-    });
-    return promise;
+  if (!params.appId && !params.appGuid) {
+      return Promise.reject('appId / appGUID of the application is required.');
   }
+  if (!params.appSecret) {
+      return Promise.reject('appSecret of the application is required.');
+  }
+
+  var appId = params.appGuid || params.appId;
+  var appSecret = params.appSecret;
+
+  // message section settings
+  var messageUrl = params.url;
+  var messageText = params.text;
+
+  // target section settings -- each param should be an array of string
+  var targetDeviceIds = params.deviceIds;
+  var targetPlatforms = params.platforms;
+  var targetTagNames = params.tagNames;
+
+  // apns settings
+  var apnsBadge = params.apnsBadge; // should be an int
+  var apnsCategory = params.apnsCategory;
+  var apnsActionKeyTitle = params.apnsIosActionKey;
+  var apnsSound = params.apnsSound;
+  var apnsPayload = params.apnsPayload;
+  var apnsType = params.apnsType;
+
+  // gcm settings
+  var gcmCollapseKey = params.gcmCollapseKey;
+  var gcmDelayWhileIdle = params.gcmDelayWhileIdle;
+  var gcmPayload = params.gcmPayload;
+  var gcmPriority = params.gcmPriority;
+  var gcmSound = params.gcmSound;
+  var gcmTimeToLive = params.gcmTimeToLive;
+  var gcmSync = params.gcmSync;
+  var gcmVisibility = params.gcmVisibility;
+
+  //GCM Style settings
+  var gcmStyleType = params.gcmStyleType;
+  var gcmStyleTitle = params.gcmStyleTitle;
+  var gcmStyleUrl = params.gcmStyleUrl;
+  var gcmStyleText = params.gcmStyleText;
+  var gcmStyleLines = params.gcmStyleLines;
+
+  //Firefox web settings
+  var fireFoxTitle = params.fireFoxTitle;
+  var fireFoxIconUrl = params.fireFoxIconUrl;
+  var fireFoxTimeToLive = params.fireFoxTimeToLive;
+  var fireFoxPayload = params.fireFoxPayload;
+
+  //Chrome web settings
+  var chromeTitle = params.chromeTitle;
+  var chromeIconUrl = params.chromeIconUrl;
+  var chromeTimeToLive = params.chromeTimeToLive;
+  var chromePayload = params.chromePayload;
+
+  //Chrome Apps & Extensions web settings
+  var chromeAppExtTitle = params.chromeAppExtTitle;
+  var chromeAppExtCollapseKey = params.chromeAppExtCollapseKey;
+  var chromeAppExtDelayWhileIdle = params.chromeAppExtDelayWhileIdle;
+  var chromeAppExtIconUrl = params.chromeAppExtIconUrl;
+  var chromeAppExtTimeToLive = params.chromeAppExtTimeToLive;
+  var chromeAppExtPayload = params.chromeAppExtPayload;
+
+  var sendMessage = {};
+
+  // create message section
+  var message = {};
+  if (messageText) {
+    message.alert = messageText;
+  }
+  if (messageUrl) {
+    message.url = messageUrl;
+  }
+
+  if (isEmpty(message)) {
+    return Promise.reject("No message to send");
+  } else {
+    sendMessage.message = message;
+  }
+
+  // create target section
+  var target = {};
+  if (targetDeviceIds) {
+    target.deviceIds = targetDeviceIds;
+  }
+  if (targetPlatforms) {
+    target.platforms = targetPlatforms;
+  }
+  if (targetTagNames) {
+    target.tagNames = targetTagNames;
+  }
+
+  if (isEmpty(target)) {
+    console.log("No target set, broadcasting message to all registered devices");
+  } else {
+    sendMessage.target = target;
+  }
+
+  // create apns settings section
+  var apns = {};
+  if (apnsBadge) {
+    apns.badge = apnsBadge;
+  }
+  if (apnsCategory) {
+    apns.category = apnsCategory;
+  }
+  if (apnsActionKeyTitle) {
+    apns.iosActionKey = apnsActionKeyTitle;
+  }
+  if (apnsSound) {
+    apns.sound = apnsSound;
+  }
+  if (apnsType) {
+    apns.type = apnsType;
+  }
+  if (apnsPayload) {
+    apns.payload = apnsPayload;
+  }
+
+  if (!isEmpty(apns)) {
+    sendMessage.settings = {};
+    sendMessage.settings.apns = apns;
+  }
+
+  // create gcm settings section
+  var gcm = {};
+  if (gcmCollapseKey) {
+    gcm.collapseKey = gcmCollapseKey;
+  }
+  if (gcmDelayWhileIdle) {
+    gcm.delayWhileIdle = gcmDelayWhileIdle;
+  }
+  if (gcmPayload) {
+    gcm.payload = gcmPayload;
+  }
+  if (gcmPriority) {
+    gcm.priority = gcmPriority;
+  }
+  if (gcmSound) {
+    gcm.sound = gcmSound;
+  }
+  if (gcmTimeToLive) {
+    gcm.timeToLive = gcmTimeToLive;
+  }
+  if (gcmVisibility) {
+    gcm.visibility = gcmVisibility;
+  }
+  if (gcmSync) {
+    gcm.sync = gcmSync;
+  }
+  var gcmStyle = {};
+  if(gcmStyleType){
+    gcmStyle.type = gcmStyleType;
+  }
+  if (gcmStyleTitle) {
+    gcmStyle.title = gcmStyleTitle;
+  }
+  if (gcmStyleUrl) {
+    gcmStyle.url = gcmStyleUrl;
+  }
+  if (gcmStyleText) {
+    gcmStyle.text = gcmStyleText;
+  }
+  if (gcmStyleLines) {
+    gcmStyle.lines = gcmStyleLines;
+  }
+  if (!isEmpty(gcmStyle)) {
+    gcm.style = gcmStyle;
+  }
+
+  if (!isEmpty(gcm)) {
+    if (!sendMessage.settings) {
+      sendMessage.settings = {};
+    }
+    sendMessage.settings.gcm = gcm;
+  }
+
+  // create FireFox settings section
+  var firefoxWeb = {};
+  if (fireFoxTitle){
+    firefoxWeb.title = fireFoxTitle;
+  }
+  if (fireFoxIconUrl) {
+    firefoxWeb.iconUrl = fireFoxIconUrl;
+  }
+  if (fireFoxTimeToLive) {
+    firefoxWeb.timeToLive = fireFoxTimeToLive;
+  }
+  if (fireFoxPayload) {
+    firefoxWeb.payload = fireFoxPayload;
+  }
+
+  if (!isEmpty(firefoxWeb)) {
+    if (!sendMessage.settings) {
+      sendMessage.settings = {};
+    }
+    sendMessage.settings.firefoxWeb = firefoxWeb;
+  }
+
+  // create Chrome settings section
+  var chromeWeb = {};
+  if (chromeTitle){
+    chromeWeb.title = chromeTitle;
+  }
+  if (chromeIconUrl) {
+    chromeWeb.iconUrl = chromeIconUrl;
+  }
+  if (chromeTimeToLive) {
+    chromeWeb.timeToLive = chromeTimeToLive;
+  }
+  if (chromePayload) {
+    chromeWeb.payload = chromePayload;
+  }
+
+  if (!isEmpty(chromeWeb)) {
+    if (!sendMessage.settings) {
+      sendMessage.settings = {};
+    }
+    sendMessage.settings.chromeWeb = chromeWeb;
+  }
+
+  // create Chrome Apps & Extensions settings section
+  var chromeAppExt = {};
+  if (chromeAppExtTitle){
+    chromeAppExt.title = chromeAppExtTitle;
+  }
+  if (chromeAppExtCollapseKey) {
+    chromeAppExt.collapseKey = chromeAppExtCollapseKey;
+  }
+  if (chromeAppExtDelayWhileIdle) {
+    chromeAppExt.delayWhileIdle = chromeAppExtDelayWhileIdle;
+  }
+  if (chromeAppExtIconUrl) {
+    chromeAppExt.iconUrl = chromeAppExtIconUrl;
+  }
+  if (chromeAppExtTimeToLive) {
+    chromeAppExt.timeToLive = chromeAppExtTimeToLive;
+  }
+  if (chromeAppExtPayload) {
+    chromeAppExt.payload = chromeAppExtPayload;
+  }
+  if (!isEmpty(chromeAppExt)) {
+    if (!sendMessage.settings) {
+      sendMessage.settings = {};
+    }
+    sendMessage.settings.chromeAppExt = chromeAppExt;
+  }
+
+  var bodyData = JSON.stringify(sendMessage);
+  var request = require('request');
+  var promise = new Promise(function (resolve, reject) {
+    request({
+      method: 'post',
+      uri: 'https://mobile.ng.bluemix.net/imfpush/v1/apps/' + appId + '/messages',
+      headers: {
+        'appSecret': appSecret,
+        'Accept': 'application/json',
+        'Accept-Language': 'en-US',
+        'Content-Type': 'application/json',
+        'Content-Length': bodyData.length
+      },
+      body: bodyData
+    }, function (error, response, body) {
+      if (error) {
+        reject(error);
+      }
+      var j = JSON.parse(body);
+      resolve(j);
+    });
+  });
+  return promise;
 }
 
 function isEmpty(obj) {
@@ -346,14 +349,3 @@ function isEmpty(obj) {
   return true;
 }
 
-function validateParams(params) {
-  if (!params.appId && !params.appGuid) {
-    whisk.error('appId / appGUID of the application is required.');
-    return false;
-  }
-  if (!params.appSecret) {
-    whisk.error('appSecret of the application is required.');
-    return false;
-  }
-  return true;
-}

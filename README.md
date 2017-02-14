@@ -5,7 +5,7 @@
 
 The `/whisk.system/pushnotifications` package enables you to work with a push service.
 
-It includes the following action and feed:
+The package includes the following action and feed:
 
 | Entity | Type | Parameters | Description |
 | --- | --- | --- | --- |
@@ -56,8 +56,8 @@ The `/whisk.system/pushnotifications/sendMessage` action sends push notification
 - `url`: An optional URL that can be sent along with the alert. For example: `-p url "https:\\www.w3.ibm.com"`.
 - `deviceIds` The list of specified devices. For example: `-p deviceIds ["deviceID1"]`.
 - `platforms` Send notification to the devices of the specified platforms. 'A' for apple (iOS) devices and 'G' for google (Android) devices. For example `-p platforms ["A"]`.
-- `tagNames` Send notification to the devices that have subscribed to any of these tags. For example `-p tagNames "["tag1"]" `.
-- `gcmPayload`: Custom JSON payload that will be sent as part of the notification message. For example: `-p gcmPayload "{"hi":"hello"}"`
+- `tagNames` Send notification to the devices that have subscribed to any of these tags. For example `-p tagNames "[\"tag1\"]" `.
+- `gcmPayload`: Custom JSON payload that will be sent as part of the notification message. For example: `-p gcmPayload "{\"hi\":\"hello\"}"`
 - `gcmSound`: The sound file (on device) that will be attempted to play when the notification arrives on the device.
 - `gcmCollapseKey`: This parameter identifies a group of messages
 - `gcmDelayWhileIdle`: When this parameter is set to true, it indicates that the message will not be sent until the device becomes active.

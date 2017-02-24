@@ -1,7 +1,6 @@
-
-
 # Using the Push package
 [![Build Status](https://travis-ci.org/apache/incubator-openwhisk-package-pushnotifications.svg?branch=master)](https://travis-ci.org/apache/incubator-openwhisk-package-pushnotifications)
+
 
 The `/whisk.system/pushnotifications` package enables you to work with a push service.
 
@@ -14,7 +13,7 @@ The package includes the following action and feed:
 | `/whisk.system/pushnotifications/webhook` | feed | events | Fire trigger events on device activities (device registration, unregistration, subscription, or unsubscription) on the Push service |
 Creating a package binding with the `appId` and `appSecret` values is suggested. This way, you don't need to specify these credentials every time you invoke the actions in the package.
 
-### Creating a Push package binding
+## Creating a Push package binding
 
 While creating a Push Notifications package binding, you must specify the following parameters,
 
@@ -28,28 +27,27 @@ The following is an example of creating a package binding.
 2. Initialize the Push Notification Service and bind the service to the Bluemix application
 
 3. Configure the [Push Notification application](https://console.ng.bluemix.net/docs/services/mobilepush/index.html).
-
+  
   Be sure to remember the `App GUID` and the `App Secret` of the Bluemix app you created.
-
-
+  
 4. Create a package binding with the `/whisk.system/pushnotifications`.
-
+  
   ```
-  $ wsk package bind /whisk.system/pushnotifications myPush -p appId myAppID -p appSecret myAppSecret
+  wsk package bind /whisk.system/pushnotifications myPush -p appId myAppID -p appSecret myAppSecret
   ```
-
+  
 5. Verify that the package binding exists.
-
+  
   ```
-  $ wsk package list
+  wsk package list
   ```
-
   ```
   packages
   /myNamespace/myPush private binding
   ```
+  
 
-### Sending push notifications
+## Sending push notifications
 
 The `/whisk.system/pushnotifications/sendMessage` action sends push notifications to registered devices. The parameters are as follows:
 - `text`: The notification message to be shown to the user. For example: `-p text "Hi ,OpenWhisk send a notification"`.
@@ -93,23 +91,42 @@ The `/whisk.system/pushnotifications/sendMessage` action sends push notification
 
 Here is an example of sending push notification from the *pushnotification* package.
 
-1. Send push notification by using the `sendMessage` action in the package binding that you created previously. Be sure to replace `/myNamespace/myPush` with your package name.
+- Send a push notification by using the `sendMessage` action in the package binding that you created previously. Be sure to replace `/myNamespace/myPush` with your package name.
+  
+  ```
+  wsk action invoke /myNamespace/myPush/sendMessage --blocking --result  -p url https://example.com -p text "this is my message"  -p sound soundFileName -p deviceIds "[\"T1\",\"T2\"]"
+  ```
+  {: pre}
+  ```json
+  {
+    "result": {
+    "pushResponse": 
+      {
+        "messageId":"11111H",
+        "message":{
+          "alert":"this is my message",
+          "url":""
+        },
+        "settings":{
+          "apns":{
+            "sound":"default"
+          },
+          "gcm":{
+            "sound":"default"
+            },
+          "target":{
+            "deviceIds":["T1","T2"]
+          }
+        }
+      }
+    },
+    "status": "success",
+    "success": true
+  }
+  ```
+  
 
-```
-wsk action invoke /myNamespace/myPush/sendMessage --blocking --result  -p url https://example.com -p text "this is my message"  -p sound soundFileName -p deviceIds "[\"T1\",\"T2\"]"
-```
-
-```
-{
-"result": {
-"pushResponse": "{"messageId":"11111H","message":{"message":{"alert":"this is my message","url":"http.google.com"},"settings":{"apns":{"sound":"default"},"gcm":{"sound":"default"},"target":{"deviceIds":["T1","T2"]}}}"
-},
-"status": "success",
-"success": true
-}
-```
-
-### Firing a trigger event on Push activity
+## Firing a trigger event on Push Notifications service activity
 
 The `/whisk.system/pushnotifications/webhook` configures the Push service to fire a trigger when there is a device activity such as device registration / unregistration or subscription / unsubscription in a specified application
 
@@ -122,66 +139,31 @@ The parameters are as follows:
 The following is an example of creating a trigger that will be fired each time there is a new device registered with the Push Notifications service application.
 
 1. Create a package binding configured for your Push Notifications service with your appId and appSecret.
-
+  
   ```
-  $ wsk package bind /whisk.system/pushnotifications myNewDeviceFeed --param appID myapp --param appSecret myAppSecret --param events onDeviceRegister
+  wsk package bind /whisk.system/pushnotifications myNewDeviceFeed --param appID myapp --param appSecret myAppSecret --param events onDeviceRegister
   ```
-
+  
 2. Create a trigger for the Push Notifications service `onDeviceRegister` event type using your `myPush/webhook` feed.
-
+  
   ```
-  $ wsk trigger create myPushTrigger --feed myPush/webhook --param events onDeviceRegister
+  wsk trigger create myPushTrigger --feed myPush/webhook --param events onDeviceRegister
+  ``` 
+  
+3. You could create a rule that sends a message every time a new device gets register. Create a new rule using the previous action and trigger.
+  
   ```
-
-### Using Push Package Locally.
-
-You can use the push package actions and feed in your own openWhisk packages. For using it you have to download the Push package form the  [openwhisk-package-pushnotifications](https://github.com/openwhisk/openwhisk-package-pushnotifications) repository.
-
-To create your own package follow the below steps,
-
-1. Point to the `openwhisk-package-pushnotifications` location.
-2. Create the package using `wsk package create package-name` command
-3. Add action  using the following command,
-
+  wsk rule create --enable myRule myPushTrigger sendMessage
   ```
-  wsk action create actionName sendMessage.js -p appId your_AppId -p appSecret application_Secret -p text "message"
-  ```
+  {: pre}
+  
+  Check the results in the `wsk activation poll`.
 
-  You can add multiple parameters to sendMessage action.
-  Check for the available parameters [here](#action parameters)
+  Register a device in your Bluemix application , you can see the `rule`,`trigger` and  `action` getting executed in the openWhisk [dashboard] (https://console.{Domain}/openwhisk/dashboard).
 
-4. Create feed using the following command,
-
-   ```
-   wsk action create /myNamespace/yourPackageName/webhook webhook.js -a feed true
-   ```
-
-5. Create a trigger using the feed created above,
-
-   ```
-   wsk trigger create triggerName --feed /myNamespace/yourPackageName/webhook -p appId your_AppId -p appSecret application_Secret -p events onDeviceUnregister
-   ```
-
-  Output will be like this:
-
-    ```
-    {
-    "response": {
-                "name":"triggerName",
-                "eventTypes":"onDeviceRegister",
-                "url":"https://openWhiskAuth@openwhisk.ng.bluemix.net/api/v1/namespaces/myNamespace/triggers/triggerName"
-                }
-    }
-    ```
-
-6. We need to create a rule that will combine the trigger and the action created in previous steps.Create the rule using ,
-
-   `wsk rule create --enable yourRule triggerName actionName `
-
-7. Check the results in the `wsk activation poll`.
-8. Register a device in your Bluemix application , you can see the `rule`,`trigger` and  `action` getting executed in the openWhisk [dashboard] (https://new-console.ng.bluemix.net/openwhisk/dashboard).
-9. The action will send a push notification.
-
+  The action will send a push notification.
+  
+# Working with repository
 
 ## Deploying Push Package using `installCatalog.sh`
 

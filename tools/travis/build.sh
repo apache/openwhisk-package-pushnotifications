@@ -1,3 +1,4 @@
+#!/bin/bash
 # Build script for Travis-CI.
 
 SCRIPTDIR=$(cd $(dirname "$0") && pwd)
@@ -7,6 +8,9 @@ WHISKDIR="$ROOTDIR/openwhisk"
 cd $WHISKDIR
 
 tools/build/scanCode.py $ROOTDIR
+
+# No point to continue with PRs, since encryption is on
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then exit 0; fi
 
 cd $WHISKDIR/ansible
 

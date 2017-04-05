@@ -36,7 +36,6 @@ function main(params) {
     var appSecret = params.appSecret;
     // The URL to create the webhook on push service
     var registrationEndpoint = 'https://mobile.ng.bluemix.net/imfpush/v1/apps/' + appId + '/webhooks';
-    //var registrationEndpoint = 'https://imfpushtest1.ng.bluemix.net/imfpush/v1/apps/'+appId+'/webhooks';
     var lifecycleEvent = (params.lifecycleEvent || 'CREATE').trim().toUpperCase();
     if (lifecycleEvent === 'CREATE' || lifecycleEvent === 'UPDATE') {
 

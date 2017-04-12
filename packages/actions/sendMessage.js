@@ -23,34 +23,57 @@
 *  @param {object} text - The notification message to be shown to the user. Eg: -p text "Hi ,OpenWhisk send a notification"
 *  @param {string} deviceIds - Send notification to the list of specified devices. Eg: -p deviceIds "["deviceID1"]"
 *  @param {object} platforms - Send notification to the devices of the specified platforms. 'A' for apple (iOS) devices and 'G' for google (Android) devices. Eg: -p platforms ["A"]
+*  @param {object} userIds - Send notification to the devices of the specified users. Eg: -p userIds ["testUser"]
 *  @param {string} tagNames - Send notification to the devices that have subscribed to any of these tags. Eg -p tagNames "["tag1"]"
-*  @param {string} gcmPayload - Custom JSON payload that will be sent as part of the notification message. Eg: -p gcmPayload "{"hi":"hello"}".
-*  @param {string} gcmSound - The sound file (on device) that will be attempted to play when the notification arrives on the device.
+
 *  @param {string} gcmCollapseKey - This parameter identifies a group of messages.
+*  @param {string} gcmCategory - The category identifier to be used for the interactive push notifications.
+*  @param {string} gcmIcon - Specify the name of the icon to be displayed for the notification. Make sure the icon is already packaged with the client application.
 *  @param {string} gcmDelayWhileIdle - When this parameter is set to true, it indicates that the message should not be sent until the device becomes active.
-*  @param {string} gcmPriority - Sets the priority of the message.
-*  @param {string} gcmTimeToLive - This parameter specifies how long (in seconds) the message should be kept in GCM storage if the device is offline.
 *  @param {string} gcmSync - Device group messaging makes it possible for every app instance in a group to reflect the latest messaging state.
 *  @param {string} gcmVisibility - private/public - Visibility of this notification, which affects how and when the notifications are revealed on a secure locked screen.
+*  @param {string} gcmPayload - Custom JSON payload that will be sent as part of the notification message. Eg: -p gcmPayload "{"hi":"hello"}".
+*  @param {string} gcmPriority - Sets the priority of the message.
+*  @param {string} gcmSound - The sound file (on device) that will be attempted to play when the notification arrives on the device.
+*  @param {string} gcmTimeToLive - This parameter specifies how long (in seconds) the message should be kept in GCM storage if the device is offline.
 *  @param {string} gcmStyleType - Specifies the type of expandable notifications. The possible values are bigtext_notification, picture_notification, inbox_notification.
 *  @param {string} gcmStyleTitle - Specifies the title of the notification. The title is displayed when the notification is expanded. Title must be specified for all three expandable notification.
 *  @param {string} gcmStyleUrl - An URL from which the picture has to be obtained for the notification. Must be specified for picture_notification.
 *  @param {string} gcmStyleText - The big text that needs to be displayed on expanding a bigtext_notification. Must be specified for bigtext_notification.
 *  @param {string} gcmStyleLines - An array of strings that is to be displayed in inbox style for inbox_notification. Must be specified for inbox_notification.
+*  @param {string} gcmLightsLedArgb - The color of the led. The hardware will do its best approximation.
+*  @param {string} gcmLightsLedOnMs - The number of milliseconds for the LED to be on while it's flashing. The hardware will do its best approximation.
+*  @param {string} gcmLightsLedOffMs - The number of milliseconds for the LED to be off while it's flashing. The hardware will do its best approximation.
+
 *  @param {string} apnsBadge - The number to display as the badge of the application icon.
 *  @param {string} apnsCategory -  The category identifier to be used for the interactive push notifications.
 *  @param {string} apnsIosActionKey - The title for the Action key.
 *  @param {string} apnsPayload - Custom JSON payload that will be sent as part of the notification message.
 *  @param {string} apnsType - ['DEFAULT', 'MIXED', 'SILENT'].
 *  @param {string} apnsSound - The name of the sound file in the application bundle. The sound of this file is played as an alert.
+*  @param {string} apnsTitleLocKey - The key to a title string in the Localizable.strings file for the current localization. The key string can be formatted with %@ and %n$@ specifiers to take the variables specified in the titleLocArgs array.
+*  @param {string} apnsLocKey - A key to an alert-message string in a Localizable.strings file for the current localization (which is set by the user’s language preference). The key string can be formatted with %@ and %n$@ specifiers to take the variables specified in the locArgs array.
+*  @param {string} apnsLaunchImage - The filename of an image file in the app bundle, with or without the filename extension. The image is used as the launch image when users tap the action button or move the action slider.
+*  @param {string} apnsTitleLocArgs - Variable string values to appear in place of the format specifiers in title-loc-key.
+*  @param {string} apnsLocArgs - Variable string values to appear in place of the format specifiers in locKey.
+*  @param {string} apnstitle - The title of Rich Push notifications (Supported only on iOS 10 and above).
+*  @param {string} apnsSubtitle - The subtitle of the Rich Notifications. (Supported only on iOS 10 and above).
+*  @param {string} apnsAttachmentUrl - The link to the iOS notifications media (video, audio, GIF, images - Supported only on iOS 10 and above).
+
 *  @param {string} fireFoxTitle - Specifies the title to be set for the WebPush Notification.
 *  @param {string} fireFoxIconUrl -  The URL of the icon to be set for the WebPush Notification.
 *  @param {string} fireFoxTimeToLive - This parameter specifies how long (in seconds) the message should be kept in GCM storage if the device is offline.
 *  @param {string} fireFoxPayload - Custom JSON payload that will be sent as part of the notification message.
+
 *  @param {string} chromeTitle - Specifies the title to be set for the WebPush Notification.
 *  @param {string} chromeIconUrl -  The URL of the icon to be set for the WebPush Notification.
 *  @param {string} chromeTimeToLive - This parameter specifies how long (in seconds) the message should be kept in GCM storage if the device is offline.
 *  @param {string} chromePayload - Custom JSON payload that will be sent as part of the notification message.
+
+*  @param {string} safariTitle - Specifies the title to be set for the Safari Push Notifications.
+*  @param {string} safariUrlArgs - The URL arguments that need to be used with this notification. This has to provided in the form of a JSON Array.
+*  @param {string} safariAction - The label of the action button.
+
 *  @param {string} chromeAppExtTitle - Specifies the title to be set for the WebPush Notification.
 *  @param {string} chromeAppExtCollapseKey - This parameter identifies a group of messages.
 *  @param {string} chromeAppExtDelayWhileIdle - When this parameter is set to true, it indicates that the message should not be sent until the device becomes active.
@@ -82,6 +105,7 @@ function main(params) {
   var targetDeviceIds = params.deviceIds;
   var targetPlatforms = params.platforms;
   var targetTagNames = params.tagNames;
+  var targetUserIds = params.userIds;
 
   // apns settings
   var apnsBadge = params.apnsBadge; // should be an int
@@ -90,6 +114,14 @@ function main(params) {
   var apnsSound = params.apnsSound;
   var apnsPayload = params.apnsPayload;
   var apnsType = params.apnsType;
+  var apnsTitleLocKey = params.apnsTitleLocKey;
+  var apnsLocKey = params.apnsLocKey;
+  var apnsLaunchImage = params.apnsLaunchImage;
+  var apnsTitleLocArgs = params.apnsTitleLocArgs;
+  var apnsLocArgs = params.apnsLocArgs;
+  var apnstitle = params.apnstitle;
+  var apnsSubtitle = params.apnsSubtitle;
+  var apnsAttachmentUrl = params.apnsAttachmentUrl;
 
   // gcm settings
   var gcmCollapseKey = params.gcmCollapseKey;
@@ -100,6 +132,8 @@ function main(params) {
   var gcmTimeToLive = params.gcmTimeToLive;
   var gcmSync = params.gcmSync;
   var gcmVisibility = params.gcmVisibility;
+  var gcmCategory = params.gcmCategory;
+  var gcmIcon = params.gcmIcon;
 
   //GCM Style settings
   var gcmStyleType = params.gcmStyleType;
@@ -107,6 +141,11 @@ function main(params) {
   var gcmStyleUrl = params.gcmStyleUrl;
   var gcmStyleText = params.gcmStyleText;
   var gcmStyleLines = params.gcmStyleLines;
+
+  //GCM Light settings
+  var gcmLightsLedArgb = params.gcmLightsLedArgb;
+  var gcmLightsLedOnMs = params.gcmLightsLedOnMs;
+  var gcmLightsLedOffMs = params.gcmLightsLedOffMs;
 
   //Firefox web settings
   var fireFoxTitle = params.fireFoxTitle;
@@ -119,6 +158,11 @@ function main(params) {
   var chromeIconUrl = params.chromeIconUrl;
   var chromeTimeToLive = params.chromeTimeToLive;
   var chromePayload = params.chromePayload;
+
+  //Safari web settings
+  var safariTitle = params.safariTitle;
+  var safariUrlArgs = params.safariUrlArgs;
+  var safariAction = params.safariAction;
 
   //Chrome Apps & Extensions web settings
   var chromeAppExtTitle = params.chromeAppExtTitle;
@@ -156,6 +200,9 @@ function main(params) {
   if (targetTagNames) {
     target.tagNames = targetTagNames;
   }
+  if (targetUserIds) {
+    target.userIds = targetUserIds;
+  }
 
   if (isEmpty(target)) {
     console.log("No target set, broadcasting message to all registered devices");
@@ -182,6 +229,30 @@ function main(params) {
   }
   if (apnsPayload) {
     apns.payload = apnsPayload;
+  }
+  if (apnsTitleLocKey) {
+    apns.titleLocKey = apnsTitleLocKey;
+  }
+  if (apnsLocKey) {
+    apns.locKey = apnsLocKey;
+  }
+  if (apnsLaunchImage) {
+    apns.launchImage = apnsLaunchImage;
+  }
+  if (apnsTitleLocArgs) {
+    apns.titleLocArgs = apnsTitleLocArgs;
+  }
+  if (apnsLocArgs) {
+    apns.locArgs = apnsLocArgs;
+  }
+  if (apnstitle) {
+    apns.title = apnstitle;
+  }
+  if (apnsSubtitle) {
+    apns.subtitle = apnsSubtitle;
+  }
+  if (apnsAttachmentUrl) {
+    apns.attachmentUrl = apnsAttachmentUrl;
   }
 
   if (!isEmpty(apns)) {
@@ -215,6 +286,13 @@ function main(params) {
   if (gcmSync) {
     gcm.sync = gcmSync;
   }
+  if (gcmCategory) {
+    gcm.interactiveCategory = gcmCategory;
+  }
+  if (gcmIcon) {
+    gcm.icon = gcmIcon;
+  }
+
   var gcmStyle = {};
   if(gcmStyleType){
     gcmStyle.type = gcmStyleType;
@@ -233,6 +311,20 @@ function main(params) {
   }
   if (!isEmpty(gcmStyle)) {
     gcm.style = gcmStyle;
+  }
+
+  var gcmLights = {};
+  if(gcmLightsLedArgb){
+    gcmLights.ledArgb = gcmLightsLedArgb;
+  }
+  if (gcmLightsLedOnMs) {
+    gcmLights.ledOnMs = gcmLightsLedOnMs;
+  }
+  if (gcmLightsLedOffMs) {
+    gcmLights.ledOffMs = gcmLightsLedOffMs;
+  }
+  if (!isEmpty(gcmLights)) {
+    gcm.lights = gcmLights;
   }
 
   if (!isEmpty(gcm)) {
@@ -262,6 +354,24 @@ function main(params) {
       sendMessage.settings = {};
     }
     sendMessage.settings.firefoxWeb = firefoxWeb;
+  }
+
+  // create Safari settings section
+  var safariWeb = {};
+  if (safariTitle){
+    safariWeb.title = safariTitle;
+  }
+  if (safariUrlArgs) {
+    safariWeb.urlArgs = safariUrlArgs;
+  }
+  if (safariAction) {
+    safariWeb.action = safariAction;
+  }
+  if (!isEmpty(safariWeb)) {
+    if (!sendMessage.settings) {
+      sendMessage.settings = {};
+    }
+    sendMessage.settings.safariWeb = safariWeb;
   }
 
   // create Chrome settings section
@@ -348,4 +458,3 @@ function isEmpty(obj) {
 
   return true;
 }
-

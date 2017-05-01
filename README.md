@@ -53,9 +53,9 @@ The `/whisk.system/pushnotifications/sendMessage` action sends push notification
 
 - `text`: The notification message to be shown to the user. For example: `-p text "Hi ,OpenWhisk send a notification"`.
 - `url`: An optional URL that can be sent along with the alert. For example: `-p url "https:\\www.w3.ibm.com"`.
-- `deviceIds` The list of specified devices. For example: `-p deviceIds ["deviceID1"]`.
+- `deviceIds` The list of specified devices. For example: `-p deviceIds "[\"deviceID1\"]"`.
 - `platforms` Send notification to the devices of the specified platforms. 'A' for apple (iOS) devices and 'G' for google (Android) devices. For example `-p platforms ["A"]`.
-- `userIds` - Send notification to the devices of the specified users. For example: `-p userIds ["testUser"]`
+- `userIds` - Send notification to the devices of the specified users. For example: `-p userIds "[\"testUser\"]"`
 - `tagNames` Send notification to the devices that have subscribed to any of these tags. For example `-p tagNames "[\"tag1\"]" `.
 
 - `gcmCollapseKey`: This parameter identifies a group of messages

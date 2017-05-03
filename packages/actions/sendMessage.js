@@ -88,10 +88,10 @@ var https = require('https');
 function main(params) {
 
   if (!params.appId && !params.appGuid) {
-      return Promise.reject('appId / appGUID of the application is required.');
+    return Promise.reject('appId / appGUID of the application is required.');
   }
   if (!params.appSecret) {
-      return Promise.reject('appSecret of the application is required.');
+    return Promise.reject('appSecret of the application is required.');
   }
 
   var appId = params.appGuid || params.appId;
@@ -424,27 +424,44 @@ function main(params) {
   }
 
   var bodyData = JSON.stringify(sendMessage);
-  var request = require('request');
+
+  var postheaders = {
+    'Content-Type' : 'application/json',
+    'Content-Length' : Buffer.byteLength(bodyData, 'utf8'),
+    'appSecret': appSecret
+  };
+
+  var optionspost = {
+    host : 'mobile.ng.bluemix.net',
+    port : 443,
+    path : '/imfpush/v1/apps/' + appId + '/messages',
+    method : 'POST',
+    headers : postheaders
+  };
+
   var promise = new Promise(function (resolve, reject) {
-    request({
-      method: 'post',
-      uri: 'https://mobile.ng.bluemix.net/imfpush/v1/apps/' + appId + '/messages',
-      headers: {
-        'appSecret': appSecret,
-        'Accept': 'application/json',
-        'Accept-Language': 'en-US',
-        'Content-Type': 'application/json',
-        'Content-Length': bodyData.length
-      },
-      body: bodyData
-    }, function (error, response, body) {
-      if (error) {
-        reject(error);
-      }
-      var j = JSON.parse(body);
-      resolve(j);
+    var reqPost = https.request(optionspost, function(res) {
+      var body = '';
+      res.on('data', function(chunk){
+        body += chunk;
+      });
+      res.on('end', function(){
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          reject(body);
+        } else{
+          var Pushresponse = JSON.parse(body);
+          resolve(Pushresponse);
+        }
+      });
     });
+
+    reqPost.write(bodyData);
+    reqPost.on('error', function(e) {
+      reject(e);
+    });
+    reqPost.end();
   });
+
   return promise;
 }
 

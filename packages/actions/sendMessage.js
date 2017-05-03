@@ -88,10 +88,10 @@ var https = require('https');
 function main(params) {
 
   if (!params.appId && !params.appGuid) {
-      return Promise.reject('appId / appGUID of the application is required.');
+    return Promise.reject('appId / appGUID of the application is required.');
   }
   if (!params.appSecret) {
-      return Promise.reject('appSecret of the application is required.');
+    return Promise.reject('appSecret of the application is required.');
   }
 
   var appId = params.appGuid || params.appId;
@@ -432,9 +432,7 @@ function main(params) {
       headers: {
         'appSecret': appSecret,
         'Accept': 'application/json',
-        'Accept-Language': 'en-US',
-        'Content-Type': 'application/json',
-        'Content-Length': bodyData.length
+        'Content-Type': 'application/json'
       },
       body: bodyData
     }, function (error, response, body) {

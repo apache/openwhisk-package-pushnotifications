@@ -34,12 +34,28 @@ class PushNotificationsTests
   val url = "www.google.com".toJson;
 
   val messageText = "This is pushnotifications Testing".toJson;
+  val unicodeMessage = "\ue04a".toJson;
+  val accentMessage = "Máxima de 33 C and Mínima de 26 C".toJson;
 
   behavior of "Push Package"
 
     it should "Send Notification action" in {
            val name = "/whisk.system/pushnotifications/sendMessage"
              withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appGuid" -> appGuid, "text" -> messageText))){
+                 _.response.result.get.toString should include ("message")
+             }
+    }
+
+    it should "Send Notification action with unicode message" in {
+           val name = "/whisk.system/pushnotifications/sendMessage"
+             withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appGuid" -> appGuid, "text" -> unicodeMessage))){
+                 _.response.result.get.toString should include ("message")
+             }
+    }
+
+    it should "Send Notification action with accent message" in {
+           val name = "/whisk.system/pushnotifications/sendMessage"
+             withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appGuid" -> appGuid, "text" -> accentMessage))){
                  _.response.result.get.toString should include ("message")
              }
     }

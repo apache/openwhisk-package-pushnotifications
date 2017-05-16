@@ -195,3 +195,10 @@ The following is an example of creating a trigger that will be fired each time t
 2. cd openwhisk-package-pushnotifications/packages
 3. ./installCatalog.sh AUTH APIHOST NAMESPACE WSK_CLI
    AUTH is your auth key.  APIHOST is the OpenWhisk hostname.  NAMESPACE is the namespace to install the package in.  WSK_CLI is location of the Openwhisk CLI binary.
+
+
+testing travis PR build speed
+Test Wed 29 March 10:47 AM EST
+Test Wed 29 March 1:18 PM EST
+Test Wed 29 March 6:55 PM EST
+Test Wed 29 March 11:45 PM EST

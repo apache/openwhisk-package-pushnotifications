@@ -4,7 +4,7 @@
 # automatically
 #
 # To run this command
-# ./installCatalog.sh  <AUTH> <APIHOST> <NAMESPACE> <WSK_CLI>
+# ./installCatalog.sh  <AUTH> <APIHOST> <WSK_CLI>
 # AUTH, APIHOST and NAMESPACE are found in $HOME/.wskprops
 # WSK_CLI="$OPENWHISK_HOME/bin/wsk"
 
@@ -13,13 +13,14 @@ set -x
 
 if [ $# -eq 0 ]
 then
-echo "Usage: ./installCatalog.sh <authkey> <apihost> <namespace> <pathtowskcli>"
+echo "Usage: ./installCatalog.sh <authkey> <apihost> <pathtowskcli>"
 fi
 
 AUTH="$1"
 APIHOST="$2"
-NAMESPACE="$3"
-WSK_CLI="$4"
+WSK_CLI="$3"
+
+NAMESPACE="/whisk.system"
 
 # If the auth key file exists, read the key in the file. Otherwise, take the
 # first argument as the key itself.

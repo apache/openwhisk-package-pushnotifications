@@ -1,6 +1,7 @@
 # Using the Push package
-[![Build Status](https://travis-ci.org/apache/incubator-openwhisk-package-pushnotifications.svg?branch=master)](https://travis-ci.org/apache/incubator-openwhisk-package-pushnotifications)
 
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Build Status](https://travis-ci.org/apache/incubator-openwhisk-package-pushnotifications.svg?branch=master)](https://travis-ci.org/apache/incubator-openwhisk-package-pushnotifications)
 
 The `/whisk.system/pushnotifications` package enables you to work with a push service.
 

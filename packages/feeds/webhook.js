@@ -67,14 +67,14 @@ function main(params) {
 
         return promise;
     } else if (lifecycleEvent === 'DELETE') {
-        var options = {
+        options = {
             method: 'DELETE',
             url: registrationEndpoint,
             headers: {
                 'appSecret': appSecret
             }
         };
-        var promise = new Promise(function(resolve, reject) {
+        promise = new Promise(function(resolve, reject) {
             request(options, function (error, response, body) {
                 if (error) {
                     reject(error);

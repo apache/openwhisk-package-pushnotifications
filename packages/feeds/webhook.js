@@ -39,6 +39,8 @@ function main(params) {
     // The URL to create the webhook on push service
     var registrationEndpoint = 'https://mobile.ng.bluemix.net/imfpush/v1/apps/' + appId + '/webhooks';
     var lifecycleEvent = (params.lifecycleEvent || 'CREATE').trim().toUpperCase();
+    var options;
+    var promise;
     if (lifecycleEvent === 'CREATE' || lifecycleEvent === 'UPDATE') {
 
         var events = params.events;
@@ -47,7 +49,7 @@ function main(params) {
             url: whiskCallbackUrl,
             eventTypes: events
         };
-        var options = {
+        options = {
             method: 'POST',
             url: registrationEndpoint,
             body: JSON.stringify(body),
@@ -56,7 +58,7 @@ function main(params) {
                 'Content-Type': 'application/json'
             }
         };
-        var promise = new Promise(function(resolve, reject) {
+        promise = new Promise(function(resolve, reject) {
             request(options, function (error, response, body) {
                 if (error) {
                     reject(error);

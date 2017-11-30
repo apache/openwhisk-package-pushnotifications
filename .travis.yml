@@ -24,4 +24,4 @@ before_install:
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./tools/travis/setup.sh; fi'
 
 script:
-  - ../tools/travis/build.sh
+  - ./tools/travis/build.sh

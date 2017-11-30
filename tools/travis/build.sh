@@ -3,7 +3,7 @@
 
 SCRIPTDIR=$(cd $(dirname "$0") && pwd)
 ROOTDIR="$SCRIPTDIR/../.."
-WHISKDIR="$ROOTDIR/openwhisk"
+WHISKDIR="$ROOTDIR/../openwhisk"
 
 cd $WHISKDIR
 

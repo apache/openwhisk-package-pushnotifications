@@ -12,9 +12,11 @@ UTILDIR="$ROOTDIR/../incubator-openwhisk-utilities"
 cd $UTILDIR
 scancode/scanCode.py $ROOTDIR
 
-# No point to continue with PRs, since encryption is on
-if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then exit 0; fi
+# run jshint
+cd $ROOTDIR/packages
+jshint .
 
+# Install OpenWhisk
 cd $WHISKDIR/ansible
 
 ANSIBLE_CMD="ansible-playbook -i environments/local"

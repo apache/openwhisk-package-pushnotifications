@@ -18,10 +18,7 @@ notifications:
 install: true
 
 before_install:
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then openssl aes-256-cbc -K $encrypted_ff5bbb6225c5_key -iv $encrypted_ff5bbb6225c5_iv -in tests/credentials.json.enc -out tests/credentials.json -d; fi'
-  - git clone https://github.com/openwhisk/openwhisk.git
-  - cd openwhisk
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./tools/travis/setup.sh; fi'
-
+  - ./tools/travis/setup.sh
+  
 script:
   - ./tools/travis/build.sh

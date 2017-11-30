@@ -1,13 +1,16 @@
 #!/bin/bash
+set -e
+
 # Build script for Travis-CI.
 
 SCRIPTDIR=$(cd $(dirname "$0") && pwd)
 ROOTDIR="$SCRIPTDIR/../.."
 WHISKDIR="$ROOTDIR/../openwhisk"
+UTILDIR="$ROOTDIR/../incubator-openwhisk-utilities"
 
-cd $WHISKDIR
-
-tools/build/scanCode.py $ROOTDIR
+# run scancode
+cd $UTILDIR
+scancode/scanCode.py $ROOTDIR
 
 # No point to continue with PRs, since encryption is on
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then exit 0; fi
@@ -23,7 +26,7 @@ $ANSIBLE_CMD initdb.yml
 
 cd $WHISKDIR
 
-./gradlew distDocker
+TERM=dumb ./gradlew distDocker
 
 cd $WHISKDIR/ansible
 
@@ -51,5 +54,4 @@ source $ROOTDIR/packages/installCatalog.sh $AUTH_KEY $EDGE_HOST $WSK_CLI
 
 # Test
 cd $ROOTDIR
-./gradlew :tests:test
-
+TERM=dumb ./gradlew :tests:test

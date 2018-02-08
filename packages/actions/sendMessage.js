@@ -86,6 +86,7 @@
 */
 module.paths.push('/usr/lib/node_modules');
 var https = require('https');
+var url = require('url');
 
 function main(params) {
 
@@ -432,8 +433,8 @@ function main(params) {
     apiHost = params.apiHost;
   }
   else if (params.admin_url) {
-    var adminURL = require('url').parse(`https:${params.admin_url}`);
-    apiHost = adminURL.host;
+    var adminURL = url.parse(params.admin_url).protocol === null ? `https:${params.admin_url}` : params.admin_url;
+    apiHost = url.parse(adminURL).host;
   }
   else {
     apiHost = 'mobile.ng.bluemix.net';

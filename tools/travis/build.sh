@@ -1,17 +1,22 @@
 #!/bin/bash
+set -e
+
 # Build script for Travis-CI.
 
 SCRIPTDIR=$(cd $(dirname "$0") && pwd)
 ROOTDIR="$SCRIPTDIR/../.."
-WHISKDIR="$ROOTDIR/openwhisk"
+WHISKDIR="$ROOTDIR/../openwhisk"
+UTILDIR="$ROOTDIR/../incubator-openwhisk-utilities"
 
-cd $WHISKDIR
+# run scancode
+cd $UTILDIR
+scancode/scanCode.py $ROOTDIR
 
-tools/build/scanCode.py $ROOTDIR
+# run jshint
+cd $ROOTDIR/packages
+jshint .
 
-# No point to continue with PRs, since encryption is on
-if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then exit 0; fi
-
+# Install OpenWhisk
 cd $WHISKDIR/ansible
 
 ANSIBLE_CMD="ansible-playbook -i environments/local"
@@ -23,7 +28,7 @@ $ANSIBLE_CMD initdb.yml
 
 cd $WHISKDIR
 
-./gradlew distDocker
+TERM=dumb ./gradlew distDocker
 
 cd $WHISKDIR/ansible
 
@@ -32,7 +37,7 @@ $ANSIBLE_CMD openwhisk.yml
 
 cd $WHISKDIR
 
-VCAP_SERVICES_FILE="$(readlink -f $WHISKDIR/../tests/credentials.json)"
+VCAP_SERVICES_FILE="$(readlink -f $ROOTDIR/tests/credentials.json)"
 
 #update whisk.properties to add tests/credentials.json file to vcap.services.file, which is needed in tests
 WHISKPROPS_FILE="$WHISKDIR/whisk.properties"
@@ -51,5 +56,4 @@ source $ROOTDIR/packages/installCatalog.sh $AUTH_KEY $EDGE_HOST $WSK_CLI
 
 # Test
 cd $ROOTDIR
-./gradlew :tests:test
-
+TERM=dumb ./gradlew :tests:test

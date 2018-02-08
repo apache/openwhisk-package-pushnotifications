@@ -31,6 +31,8 @@ class PushNotificationsTests
   val credentials = TestUtils.getVCAPcredentials("imfpush")
   val appSecret = credentials.get("appSecret").toJson;
   val credentialsUrl = credentials.get("url");
+  val adminURL = credentials.get("admin_url");
+  val apiHost = adminURL.split("/")(2);
   val appGuid = credentialsUrl.split("/").last.toJson;
   val url = "www.google.com".toJson;
 
@@ -67,4 +69,32 @@ class PushNotificationsTests
                 _.response.result.get.toString should include ("message")
              }
            }
+
+    it should "Send Notification action using admin_url" in {
+        val name = "/whisk.system/pushnotifications/sendMessage"
+        withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appGuid" -> appGuid, "text" -> messageText, "admin_url"-> adminURL.toJson))){
+            _.response.result.get.toString should include ("message")
+        }
+    }
+
+    it should "Send Notification action using bad admin_url" in {
+        val name = "/whisk.system/pushnotifications/sendMessage"
+        withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appGuid" -> appGuid, "text" -> messageText, "admin_url"-> "//mobile.bad.host/pathname".toJson))){
+            _.response.success shouldBe false
+        }
+    }
+
+    it should "Send Notification action using apiHost" in {
+        val name = "/whisk.system/pushnotifications/sendMessage"
+        withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appGuid" -> appGuid, "text" -> messageText, "apiHost"-> apiHost.toJson))){
+            _.response.result.get.toString should include ("message")
+        }
+    }
+
+    it should "Send Notification action using bad apiHost" in {
+        val name = "/whisk.system/pushnotifications/sendMessage"
+        withActivation(wsk.activation,wsk.action.invoke(name, Map("appSecret" -> appSecret, "appGuid" -> appGuid, "text" -> messageText, "apiHost"-> "mobile.bad.host".toJson))){
+            _.response.success shouldBe false
+        }
+    }
 }

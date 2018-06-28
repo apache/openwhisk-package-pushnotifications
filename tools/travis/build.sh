@@ -28,6 +28,7 @@ TERM=dumb ./gradlew \
 :core:controller:install \
 :core:invoker:install \
 :tests:install \
+:tools:admin:install \
 distDocker
 
 cd $WHISKDIR/ansible

@@ -9,10 +9,9 @@ The package includes the following action and feed:
 
 | Entity | Type | Parameters | Description |
 | --- | --- | --- | --- |
-| `/whisk.system/pushnotifications` | package | appId, appSecret, admin_url  | Work with the Push Service |
+| `/whisk.system/pushnotifications` | package | appId, appSecret, apiKey, admin_url  | Work with the Push Service |
 | `/whisk.system/pushnotifications/sendMessage` | action | text, url, apiHost, deviceIds, platforms, userIds, tagNames, gcmCollapseKey, gcmCategory, gcmIcon, gcmDelayWhileIdle, gcmSync, gcmVisibility, gcmPayload, gcmPriority, gcmSound, gcmTimeToLive, gcmStyleType, gcmStyleTitle, gcmStyleUrl, gcmStyleText, gcmStyleLines, gcmLightsLedArgb, gcmLightsLedOnMs, gcmLightsLedOffMs, apnsBadge, apnsCategory, apnsIosActionKey, apnsPayload, apnsType, apnsSound, apnsTitleLocKey, apnsLocKey, apnsLaunchImage, apnsTitleLocArgs, apnsLocArgs, apnstitle, apnsSubtitle, apnsAttachmentUrl, fireFoxTitle, fireFoxIconUrl, fireFoxTimeToLive, fireFoxPayload, safariTitle, safariUrlArgs, safariAction, chromeTitle, chromeIconUrl, chromeTimeToLive, chromePayload, chromeAppExtTitle, chromeAppExtCollapseKey, chromeAppExtDelayWhileIdle, chromeAppExtIconUrl, chromeAppExtTimeToLive, chromeAppExtPayload | Send push notification to one or more specified devices |
-| `/whisk.system/pushnotifications/webhook` | feed | events | Fire trigger events on device activities (device registration, unregistration, subscription, or unsubscription) on the Push service |
-Creating a package binding with the `appId` and `appSecret` values is suggested. This way, you don't need to specify these credentials every time you invoke the actions in the package.
+| `/whisk.system/pushnotifications/webhook` | feed | events, admin_url, apiHost | Fire trigger events on device activities (device registration, unregistration, subscription, or unsubscription) on the Push service | Creating a package binding with the `appId` and `appSecret` or `apiKey` values is suggested. This way, you don't need to specify these credentials every time you invoke the actions in the package.
 
 ## Creating a Push package binding
 
@@ -20,6 +19,7 @@ While creating a Push Notifications package binding, you must specify the follow
 
 -  `appId`: The Bluemix app GUID.
 -  `appSecret`: The Bluemix push notification service appSecret.
+-  `apiKey`: The Bluemix push notification service apiKey.
 
 The following is an example of creating a package binding.
 
@@ -29,12 +29,17 @@ The following is an example of creating a package binding.
 
 3. Configure the [Push Notification application](https://console.ng.bluemix.net/docs/services/mobilepush/index.html).
 
-  Be sure to remember the `App GUID` and the `App Secret` of the Bluemix app you created.
+  Be sure to remember the `App GUID` and the `App Secret` or `API Key`  of the Bluemix app you created.
 
 4. Create a package binding with the `/whisk.system/pushnotifications`.
 
   ```
   wsk package bind /whisk.system/pushnotifications myPush -p appId myAppID -p appSecret myAppSecret
+  ```
+  OR
+
+  ```
+  wsk package bind /whisk.system/pushnotifications myPush -p appId myAppID -p apiKey myApiKey
   ```
 
 5. Verify that the package binding exists.
@@ -54,7 +59,7 @@ The `/whisk.system/pushnotifications/sendMessage` action sends push notification
 
 - `text`: The notification message to be shown to the user. For example: `-p text "Hi ,OpenWhisk send a notification"`.
 - `url`: An optional URL that can be sent along with the alert. For example: `-p url "https:\\www.w3.ibm.com"`.
-- `apiHost`: An optional string that specifies the API host.  The default is 'mobile.ng.bluemix.net'.  For example: `-p apiHost "mobile.eu-gb.bluemix.net"`.
+- `apiHost`: An optional string that specifies the API host.  The default is 'imfpush.ng.bluemix.net'.  For example: `-p apiHost "imfpush.eu-gb.bluemix.net"`.
 - `deviceIds` The list of specified devices. For example: `-p deviceIds "[\"deviceID1\"]"`.
 - `platforms` Send notification to the devices of the specified platforms. 'A' for apple (iOS) devices and 'G' for google (Android) devices. For example `-p platforms ["A"]`.
 - `userIds` - Send notification to the devices of the specified users. For example: `-p userIds "[\"testUser\"]"`

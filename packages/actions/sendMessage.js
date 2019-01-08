@@ -20,8 +20,9 @@
 *
 *  @param {string} appGuid - appGuid to create webhook
 *  @param {string} appSecret - appSecret of the application
+*  @param {string} apiKey - apiKey of the application
 *  @param {string} url - An optional URL that can be sent along with the alert. Eg : -p url "https:\\www.mycompany.com".
-*  @param {string} apiHost - An optional string that specifies the API host.  The default is 'mobile.ng.bluemix.net'.  Eg : -p apiHost "mobile.eu-gb.bluemix.net".
+*  @param {string} apiHost - An optional string that specifies the API host.  The default is 'imfpush.ng.bluemix.net'.  Eg : -p apiHost "imfpush.eu-gb.bluemix.net".
 *  @param {object} text - The notification message to be shown to the user. Eg: -p text "Hi ,OpenWhisk send a notification"
 *  @param {string} deviceIds - Send notification to the list of specified devices. Eg: -p deviceIds "["deviceID1"]"
 *  @param {object} platforms - Send notification to the devices of the specified platforms. 'A' for apple (iOS) devices and 'G' for google (Android) devices. Eg: -p platforms ["A"]
@@ -87,18 +88,30 @@
 module.paths.push('/usr/lib/node_modules');
 var https = require('https');
 var url = require('url');
+var request = require('request');
 
 function main(params) {
 
   if (!params.appId && !params.appGuid) {
     return Promise.reject('appId / appGUID of the application is required.');
   }
-  if (!params.appSecret) {
-    return Promise.reject('appSecret of the application is required.');
+  if (!params.appSecret && !params.apiKey) {
+    return Promise.reject('appSecret / apiKey of the application is required.');
   }
 
   var appId = params.appGuid || params.appId;
   var appSecret = params.appSecret;
+  var apiKey = params.apiKey;
+
+  var apiHost;
+  if (params.apiHost) {
+    apiHost = params.apiHost;
+  } else if (params.admin_url) {
+    var adminURL = url.parse(params.admin_url).protocol === null ? `https:${params.admin_url}` : params.admin_url;
+    apiHost = url.parse(adminURL).host;
+  } else {
+    apiHost = 'imfpush.ng.bluemix.net';
+  }
 
   // message section settings
   var messageUrl = params.url;
@@ -297,7 +310,7 @@ function main(params) {
   }
 
   var gcmStyle = {};
-  if(gcmStyleType){
+  if (gcmStyleType) {
     gcmStyle.type = gcmStyleType;
   }
   if (gcmStyleTitle) {
@@ -317,7 +330,7 @@ function main(params) {
   }
 
   var gcmLights = {};
-  if(gcmLightsLedArgb){
+  if (gcmLightsLedArgb) {
     gcmLights.ledArgb = gcmLightsLedArgb;
   }
   if (gcmLightsLedOnMs) {
@@ -339,7 +352,7 @@ function main(params) {
 
   // create FireFox settings section
   var firefoxWeb = {};
-  if (fireFoxTitle){
+  if (fireFoxTitle) {
     firefoxWeb.title = fireFoxTitle;
   }
   if (fireFoxIconUrl) {
@@ -361,7 +374,7 @@ function main(params) {
 
   // create Safari settings section
   var safariWeb = {};
-  if (safariTitle){
+  if (safariTitle) {
     safariWeb.title = safariTitle;
   }
   if (safariUrlArgs) {
@@ -379,7 +392,7 @@ function main(params) {
 
   // create Chrome settings section
   var chromeWeb = {};
-  if (chromeTitle){
+  if (chromeTitle) {
     chromeWeb.title = chromeTitle;
   }
   if (chromeIconUrl) {
@@ -401,7 +414,7 @@ function main(params) {
 
   // create Chrome Apps & Extensions settings section
   var chromeAppExt = {};
-  if (chromeAppExtTitle){
+  if (chromeAppExtTitle) {
     chromeAppExt.title = chromeAppExtTitle;
   }
   if (chromeAppExtCollapseKey) {
@@ -427,35 +440,57 @@ function main(params) {
   }
 
   var bodyData = JSON.stringify(sendMessage);
-  var request = require('request');
-  var apiHost;
-  if (params.apiHost) {
-    apiHost = params.apiHost;
+
+  var headersJson;
+
+  if (!appSecret) {
+
+    return new Promise(function (resolve, reject) {
+      getAuthToken(apiKey, apiHost).then(function (response) {
+        if (response.hasToken) {
+          headersJson = {
+            'Authorization': "Bearer " + response.apiToken,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          };
+          sendPush(appId, apiHost, headersJson, bodyData).then(function (response) {
+            resolve(response);
+          }).catch(function (e) {
+            reject(e);
+          });
+        } else {
+          reject({
+            error: "Not able to get a valid iam token"
+          });
+        }
+      });
+    });
+  } else {
+    headersJson = {
+      'appSecret': appSecret,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    };
+    return sendPush(appId, apiHost, headersJson, bodyData);
   }
-  else if (params.admin_url) {
-    var adminURL = url.parse(params.admin_url).protocol === null ? `https:${params.admin_url}` : params.admin_url;
-    apiHost = url.parse(adminURL).host;
-  }
-  else {
-    apiHost = 'mobile.ng.bluemix.net';
-  }
+}
+
+function sendPush(appId, apiHost, headersJson, bodyData) {
 
   var promise = new Promise(function (resolve, reject) {
     request({
       method: 'post',
       uri: `https://${apiHost}/imfpush/v1/apps/${appId}/messages`,
-      headers: {
-        'appSecret': appSecret,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
+      headers: headersJson,
       body: bodyData
     }, function (error, response, body) {
-      if (error) {
-        reject(error);
-      }
-      var j = JSON.parse(body);
-      resolve(j);
+      
+      if (error || ( response.statusCode < 200 || response.statusCode > 300)) {
+        reject(body);
+      } else {
+        var jsonBody = JSON.parse(body);
+        resolve(jsonBody);
+      }      
     });
   });
   return promise;
@@ -470,4 +505,46 @@ function isEmpty(obj) {
   }
 
   return true;
+}
+
+function getAuthToken(apiKeyId, iamRegion) {
+
+  return new Promise(function (resolve, reject) {
+    iamRegion = iamRegion.substring(iamRegion.indexOf('.') + 1);
+    var iamUri = "https://iam." + iamRegion + "/identity/token"
+    var iamHeaders = {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Accept": "application/json"
+    };
+    var options = {
+      uri: iamUri,
+      method: "POST",
+      headers: iamHeaders,
+      form: {
+        grant_type: 'urn:ibm:params:oauth:grant-type:apikey',
+        apikey: apiKeyId
+      }
+    };
+    request(options, function (error, response, body) {
+      if (error) {
+        reject({
+          hasToken: false,
+          token: ""
+        });
+      } else {
+        if (response.statusCode == 200) {
+          var responseJson = JSON.parse(body);
+          resolve({
+            hasToken: true,
+            apiToken: responseJson["access_token"]
+          });
+        } else {
+          reject({
+            hasToken: false,
+            token: ""
+          });
+        }
+      }
+    });
+  });
 }

@@ -165,6 +165,8 @@ The parameters are as follows:
 
 - `appId:` The Bluemix app GUID.
 - `appSecret:` The Bluemix push notification service appSecret.
+- `apiKey`: The Bluemix push notification service apiKey.
+- `apiHost`: An optional string that specifies the API host.  The default is 'imfpush.ng.bluemix.net'.  For example: `-p apiHost "imfpush.eu-gb.bluemix.net"`.
 - `events:` Supported events are `onDeviceRegister`, `onDeviceUnregister`, `onDeviceUpdate`, `onSubscribe`, `onUnsubscribe`.To get notified for all events use the wildcard character `*`.
 
 The following is an example of creating a trigger that will be fired each time there is a new device registered with the Push Notifications service application.

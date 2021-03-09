@@ -68,7 +68,7 @@ The `/whisk.system/pushnotifications/sendMessage` action sends push notification
 - `gcmVisibility`: private/public - Visibility of this notification, which affects how and when the notifications are revealed on a secure locked screen.
 - `gcmPayload`: Custom JSON payload that will be sent as part of the notification message. For example: `-p gcmPayload "{\"hi\":\"hello\"}"`
 - `gcmPriority`: Sets the priority of the message.
-- `gcmSound`: The sound file (on device) that will be attempted to play when the notification arrives on the device.
+- `gcmSound`: The sound file (on the device) that will be attempted to play when the notification arrives on the device.
 - `gcmTimeToLive`: This parameter specifies how long (in seconds) the message will be kept in GCM storage if the device is offline.
 - `gcmStyleType`: Specifies the type of expandable notifications. The possible values are `bigtext_notification`, `picture_notification`, `inbox_notification`.
 - `gcmStyleTitle`: Specifies the title of the notification. The title is displayed when the notification is expanded. Title must be specified for all three expandable notification.
